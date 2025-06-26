@@ -1,5 +1,5 @@
 function Tournaments(){
-    return (<></>)
+    return (<>To be implemented</>)
 }
 
 export default Tournaments

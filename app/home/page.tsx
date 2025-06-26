@@ -10,7 +10,7 @@ function HomePage() {
          <SidePanel /> 
 
          {/*Content On the Right side of panel*/}  
-            <div className="flex flex-col w-full min-h-screen mt-16 md:ml-60">
+            <div className="flex flex-col w-full min-h-screen md:ml-60">
                 <Carousel />
                 <HighestRated/> 
                 <Popular/> 

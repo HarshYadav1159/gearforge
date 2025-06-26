@@ -4,9 +4,9 @@ import SearchBar from "./SearchBar"
 import Link from 'next/link'
 
 const navLink = [{name:'Home', href:'/'},
-    {name:'Browse', href:'/games'},
+    {name:'Browse', href:'/browse_games'},
     {name:'Tournaments', href:'/tournaments'},
-    {name:'Sign In', href:'/sign_in'}
+    {name:'Sign In', href:'/auth'}
 ]
 
 function NavBar() {

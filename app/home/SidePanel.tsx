@@ -7,8 +7,8 @@ function SidePanel() {
     const panelListStyle = `flex gap-2 p-2 items-center cursor-pointer hover:bg-neutral-700 hover:text-white hover:rounded-xl`
 
     return (<>
-        <div className="fixed z-20 w-60 h-screen bg-[#242528] mt-12 hidden md:block">
-            <div className="flex flex-col px-4 py-8 gap-2 ">
+        <div className="fixed z-20 w-60 h-screen bg-[#242528] hidden md:block">
+            <div className="flex flex-col px-4 py-4 gap-2 ">
                 <Link href={"/tournaments"}><div className={panelListStyle}>
                     <MdOutlineSportsMartialArts />
                     <div >E-Sports Tournaments</div>

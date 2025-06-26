@@ -14,7 +14,7 @@ function NavBar() {
     const pathName:string = usePathname()
         
     return (<>
-        <div className="relative h-fit p-3.5 w-auto bg-[#242528] border-b border-black shadow-md shadow-black/50 flex justify-between items-center">
+        <div className="fixed z-50 h-fit p-3.5 w-full bg-[#242528] border-b border-black shadow-md shadow-black/50 flex justify-between items-center">
             <div>Logo</div>
             <SearchBar type="text" name="game_search_field" placeholder="Search Game"/>
             <div className="flex gap-4 h-full ">

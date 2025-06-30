@@ -1,9 +1,10 @@
 'use client'
+import DraggableScroll from "@/app/components/common/DraggableScroll"
 import GameCard from "@/app/components/common/GameCard"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 
-const highestRated:string[] = ['Game 1', 'Game 2', 'Game 3']
+// const highestRated:string[] = ['Game 1', 'Game 2', 'Game 3']
 const apiKey = process.env.NEXT_PUBLIC_API_ACCESS_TOKEN
 
 function HighestRated(){
@@ -30,19 +31,20 @@ function HighestRated(){
         return (<div>There is some error</div>)
     }
 
-    console.log(query.data)
-
     return (<div className="m-12">
                     <p className="text-white text-3xl">
                         Highest Rated
                     </p>
 
-                    <div className="flex flex-col w-fit">
-                        <div className="flex gap-4 mt-4">
-                            {query.data.map((value, index:number) => {
+                    <div className="flex flex-col">
+                        {/* <div className="flex gap-4 mt-4 overflow-x-scroll "> */}
+                            <DraggableScroll>
+                                {query.data.map((value, index:number) => {
                                 return (<div key={index}><GameCard/></div>)
                             })}
-                        </div>
+                            </DraggableScroll>
+
+                        {/* </div> */}
                         <div className="flex flex-row-reverse">
                             <p className="p-2 cursor-pointer hover:text-white">View All Highest Rated</p>
                         </div>

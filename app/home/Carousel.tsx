@@ -32,9 +32,9 @@ function Carousel(){
         }
         },)
     
-        useEffect(()=>{
-            console.log(currImageOnBanner)
-        })
+        // useEffect(()=>{
+        //     console.log(currImageOnBanner)
+        // })
     
         const handleNextArrowBtn = ()=>{
             setImage((prevIndex)=>(prevIndex+1)%imageList.length)

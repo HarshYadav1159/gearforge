@@ -1,7 +1,6 @@
 
 import Carousel from "./Carousel";
 import HighestRated from "./sections/HighestRated";
-import Popular from "./sections/Popular";
 
 function HomePage() {
 
@@ -10,7 +9,7 @@ function HomePage() {
             <div className="flex flex-col w-full min-h-screen">
                 <Carousel />
                 <HighestRated/> 
-                <Popular/> 
+                
             </div>
         
     </main>)

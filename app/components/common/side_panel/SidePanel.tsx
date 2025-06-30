@@ -21,7 +21,7 @@ function SidePanel() {
         }
     },)
 
-    useEffect(()=>console.log(isSidePanelOpen))
+    // useEffect(()=>console.log(isSidePanelOpen))
 
     //Open by default for larger screens but can be toggled
     // className="mt-14 fixed z-20 w-60 h-screen bg-[#242528] hidden md:block"

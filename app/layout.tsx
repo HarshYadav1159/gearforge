@@ -32,7 +32,7 @@ export default function RootLayout({
         <Providers>
           <NavBar />
           <SidePanel />
-          <div className="pt-16  md:ml-60">{children}</div>
+          <div className="pt-16  md:ml-60 max-w-screen overflow-hidden">{children}</div>
         </Providers>
       </body>
     </html>

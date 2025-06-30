@@ -32,9 +32,9 @@ function Carousel(){
         }
         },)
     
-        useEffect(()=>{
-            console.log(currImageOnBanner)
-        })
+        // useEffect(()=>{
+        //     console.log(currImageOnBanner)
+        // })
     
         const handleNextArrowBtn = ()=>{
             setImage((prevIndex)=>(prevIndex+1)%imageList.length)
@@ -47,14 +47,14 @@ function Carousel(){
         }
 
     return (<>
-         <div className="mt-8 relative w-full h-8/12 md:h-96 flex items-center justify-between">
+         <div className="mt-8 relative w-full h-8/12 md:h-96  flex items-center justify-between">
                             <div onClick={handlePrevArrowBtn} className="rounded-full hover:border bg-black/50 h-8 w-8 z-10 m-8 flex items-center justify-center cursor-pointer">
                                 <MdKeyboardArrowLeft className="text-xl"/>
                             </div>
                             {/* <img src="" className="absolute w-full bg-green-600 h-full"/> */}
         
                             {/* <img className="h-full w-fit rounded-2xl" src={"/r6.png"} alt="Main Carousel Banner"/> */}
-                            <div className="relative select-none "><Image className="rounded-xl cursor-grab" src={imageList[currImageOnBanner]} alt="Main Carousel" height={620} width={720} objectFit="cover" /></div>
+                            <div className="relative select-none "><Image className="rounded-xl cursor-grab" src={imageList[currImageOnBanner]} alt="Main Carousel" height={620} width={720}/></div>
                             <div onClick={handleNextArrowBtn} className="rounded-full hover:border bg-black/50 h-8 w-8 z-10 m-8 flex items-center justify-center cursor-pointer">
                                 <MdKeyboardArrowRight className="text-2xl"/>
                             </div>

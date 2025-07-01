@@ -1,55 +1,91 @@
 'use client'
 import DraggableScroll from "@/app/components/common/DraggableScroll"
 import GameCard from "@/app/components/common/GameCard"
+import LoadingSpinner from "@/app/components/common/LoadingSpinner"
+import { CoverArt } from "@/app/models/cover_art_model"
+import { GameCardModel } from "@/app/models/game_card_model"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 
 // const highestRated:string[] = ['Game 1', 'Game 2', 'Game 3']
 const apiKey = process.env.NEXT_PUBLIC_API_ACCESS_TOKEN
 
-function HighestRated(){
+function HighestRated() {
 
-    const query = useQuery({
-        queryKey:['highest_rated'],
-        queryFn: async ()=>{
+    let gameIds: string[] = []
 
-           const response =  await axios.post(`/api/games`,'fields *;', {
-            headers:{
-                'Client-ID':'8t38bg3wjw6cfu643bmvww73yp3d0h',
-                'Authorization':'Bearer ' + apiKey
-            }
-           })
-           return response.data
+    const gameQuery = useQuery({
+        queryKey: ['highest_rated'],
+        queryFn: async () => {
+
+            const response = await axios.post(`/api/games`, 'fields *;', {
+                headers: {
+                    'Client-ID': '8t38bg3wjw6cfu643bmvww73yp3d0h',
+                    'Authorization': 'Bearer ' + apiKey
+                }
+            })
+            return response.data
         }
     })
 
-    if(query.isLoading){
-        return (<div>Loading Data</div>)
+    if (gameQuery.isFetched) {
+        gameIds = gameQuery.data.map((e: GameCardModel) => e.id)
+    }
+    const coverQuery = useQuery({
+        queryFn: async () => {
+            const response = await axios.post('/api/covers', `fields id,game,height,url,width, image_id; where game = (${gameIds.join(",")});`, {
+                headers: {
+                    'Client-ID': '8t38bg3wjw6cfu643bmvww73yp3d0h',
+                    'Authorization': 'Bearer ' + apiKey
+                }
+            })
+            return response.data
+        },
+
+        enabled: gameQuery.isFetched,
+
+        queryKey: ['game_cover']
+    })
+
+    if (gameQuery.isLoading) {
+        return <LoadingSpinner/>
     }
 
-    if(query == null){
+    if (gameQuery == null) {
         return (<div>There is some error</div>)
     }
 
-    return (<div className="m-12">
-                    <p className="text-white text-3xl">
-                        Highest Rated
-                    </p>
+    if (gameQuery.isFetched) {
+        if (coverQuery.isLoading) {
+            return (<LoadingSpinner/>)
+        }
 
-                    <div className="flex flex-col">
-                        {/* <div className="flex gap-4 mt-4 overflow-x-scroll "> */}
-                            <DraggableScroll>
-                                {query.data.map((value, index:number) => {
-                                return (<div key={index}><GameCard/></div>)
-                            })}
-                            </DraggableScroll>
+        if (coverQuery.isError) {
+            return (<div>Error Loading Cover</div>)
+        }
+    }
 
-                        {/* </div> */}
-                        <div className="flex flex-row-reverse">
-                            <p className="p-2 cursor-pointer hover:text-white">View All Highest Rated</p>
-                        </div>
-                    </div>
-                </div>)
+    return (<div className="mt-12 ml-12 mr-12 mb-4">
+        <p className="text-white text-3xl">
+            Highest Rated
+        </p>
+
+        <div className="flex flex-col">
+
+            {<DraggableScroll>
+                {gameQuery.data.map((value: GameCardModel, index: number) => {
+
+                    value.cover = coverQuery.data.find((currElem: CoverArt) => currElem.game === value.id)
+                    // console.log(value.cover.url)
+                    return (<div key={index}><GameCard game={value} /></div>)
+                })}
+            </DraggableScroll>
+            }
+            <div className="flex flex-row-reverse">
+                <p className="p-2 cursor-pointer hover:text-white">View All Highest Rated</p>
+            </div>
+        </div>
+    </div>)
 }
 
 export default HighestRated

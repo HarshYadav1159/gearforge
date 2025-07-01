@@ -7,8 +7,6 @@ import { GameCardModel } from "@/app/models/game_card_model"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 
-const popular: string[] = ['1', '2', '3', '4', '5']
-
 interface Popularity {
     //From Popularity primitives
     id: number

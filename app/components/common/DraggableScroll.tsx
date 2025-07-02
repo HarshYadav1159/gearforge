@@ -1,3 +1,5 @@
+'use client'
+
 import ScrollContainer from "react-indiana-drag-scroll"
 
 function DraggableScroll({children}:{children:React.ReactNode}){

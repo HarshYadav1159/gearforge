@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import {sidePanelSlice} from "./components/common/side_panel/sidePanelSlice"
+import { genreSlice } from "./genres/genreSlice";
 
 export const store = configureStore({
     reducer:{
-       sidePanel:sidePanelSlice.reducer
+       sidePanel:sidePanelSlice.reducer,
+       genres:genreSlice.reducer
     }
 })
 

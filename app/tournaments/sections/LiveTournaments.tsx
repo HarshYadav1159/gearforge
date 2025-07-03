@@ -2,7 +2,7 @@
 
 import React from "react";
 import DraggableScroll from "@/app/components/common/DraggableScroll";
-import TournamentCard from "../TournamentCard";
+import TournamentCard from "../../components/common/TournamentCard";
 
 const tournaments = [
   {

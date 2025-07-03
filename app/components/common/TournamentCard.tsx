@@ -1,3 +1,9 @@
+'use client'
+
+import React from 'react'
+import { useRouter } from 'next/navigation'
+
+// inside GameCard component
 interface TournamentCardProps {
   game: {
     id: number;
@@ -9,9 +15,11 @@ interface TournamentCardProps {
   type?: 'live' | 'upcoming';
 }
 
-const TournamentCard: React.FC<TournamentCardProps> = ({ game, type = 'live' }) => {
+const TournamentCard: React.FC<TournamentCardProps> = ({ game, type = 'live' }) => 
+  {
+  const router = useRouter()
   return (
-    <div className="min-w-[200px] bg-zinc-800 rounded-lg overflow-hidden">
+    <div className="min-w-[300px] bg-zinc-800 rounded-lg overflow-hidden">
       <img
         src={game.cover?.url || "/placeholder.jpg"}
         alt={game.name}
@@ -29,7 +37,10 @@ const TournamentCard: React.FC<TournamentCardProps> = ({ game, type = 'live' }) 
             <p className="text-sm text-gray-400">
               Register by: {game.registrationDeadline}
             </p>
-            <button className="mt-1 bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded">
+            <button
+              onClick={() => router.push('/tournament_register')}
+              className="mt-1 bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded"
+            >
               Register
             </button>
           </>

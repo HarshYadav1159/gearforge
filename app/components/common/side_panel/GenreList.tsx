@@ -1,10 +1,11 @@
 "use client"
 
 import { addGenre } from "@/app/genres/genreSlice";
-import { useAppDispatch } from "@/app/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { Dispatch } from "@reduxjs/toolkit";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+
 import Link from "next/link";
 import { useState } from "react";
 import { MdCategory } from "react-icons/md";
@@ -20,49 +21,50 @@ const requestHeaders = {
     'Authorization': 'Bearer ' + apiKey
 }
 
-interface GenreQueryResponse{
-    id:number
-    name:string
-}
+// interface GenreQueryResponse{
+//     id:number
+//     name:string
+// }
 
 function GenreList() {
 
     const [expandedGenre, setExpand] = useState<boolean>(false)
-    const [isTransferGenre, setTransfer] = useState<boolean>(true)
-    const genreQuery = useQuery({
-        queryFn:async()=>{
-                const response = await axios.post('/api/genres','fields id, name; limit 10;',{
-                    headers:requestHeaders
-                } )
-                return response.data
-        },
-        queryKey:['genre_list'],
-        // enabled:expandedGenre
-    })
+    const genreList = useAppSelector((state)=>state.genres.genres)
+    // const [isTransferGenre, setTransfer] = useState<boolean>(true)
+    // const genreQuery = useQuery({
+    //     queryFn:async()=>{
+    //             const response = await axios.post('/api/genres','fields id, name; limit 10;',{
+    //                 headers:requestHeaders
+    //             } )
+    //             return response.data
+    //     },
+    //     queryKey:['genre_list'],
+    //     // enabled:expandedGenre
+    // })
 
-    const dispatch : Dispatch = useAppDispatch()
-    const genreList : GenreQueryResponse[]= genreQuery.data
+    // const dispatch : Dispatch = useAppDispatch()
+    // const genreList : GenreQueryResponse[]= genreQuery.data
 
-    const {data:genres = [], isFetched:genresFetched} = useQuery({
-        queryFn:async()=>{
-                const response = await axios.post('/api/genres','fields id, name; limit 50;',{
-                    headers:requestHeaders
-                } )
-                return response.data
-        },
-        queryKey:['all_genres'],
-    })
+    // const {data:genres = [], isFetched:genresFetched} = useQuery({
+    //     queryFn:async()=>{
+    //             const response = await axios.post('/api/genres','fields id, name; limit 50;',{
+    //                 headers:requestHeaders
+    //             } )
+    //             return response.data
+    //     },
+    //     queryKey:['all_genres'],
+    // })
 
-    if(genresFetched && isTransferGenre){
-        genres.forEach((element:GenreQueryResponse) => {
-            dispatch(addGenre(element))
-        });
-        setTransfer(false)
-    }
+    // if(genresFetched && isTransferGenre){
+    //     genres.forEach((element:GenreQueryResponse) => {
+    //         dispatch(addGenre(element))
+    //     });
+    //     setTransfer(false)
+    // }
 
 
     return (<>
-        <div className="relative flex flex-col gap-2">
+        <div className="relative flex flex-col gap-2 select-none">
             {/* Show this when Genre is not expanded */}
             <div onClick={()=>setExpand((prevState=>!prevState))}className="relative flex gap-2 items-center hover:bg-neutral-700 hover:text-white hover:rounded-xl p-2 cursor-pointer">
                 <MdCategory />
@@ -73,7 +75,7 @@ function GenreList() {
             </div>
              <span className={expandedGenre ? `h-fit  px-2` : `h-0 w-0 left-0`}>
 
-                {genreList==null ? <div></div>:genreList.map((value,index)=>{
+                {genreList==null ? <div></div>:genreList.slice(0,10).map((value,index)=>{
                     return(<div key={index} onClick={()=>console.log(value)}className={expandedGenre ? `hover:text-white hover:rounded-xl transition-all duration-300 ease-out mb-2 ml-4 p-1 visible cursor-pointer`:`h-0 w-0 left-0 invisible`}>
                             {value.name}
                     </div>)

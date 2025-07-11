@@ -10,4 +10,8 @@ export interface GameModel {
     screenshots:number[]
     similar_games:number[]
     rating:number
+    first_release_date:number
+    franchises:number[]
+    game_engines:number[]
+    rating_count:number
 }

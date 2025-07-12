@@ -11,6 +11,7 @@ const upcomingTournaments = [
     cover: { url: "/assets/apex-banner.jpg" },
     registrationDeadline: "June 30, 2025",
   },
+  
   {
     id: 2,
     name: "Overwatch Global Clash",

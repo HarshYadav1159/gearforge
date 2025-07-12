@@ -72,8 +72,8 @@ function GamePage({params}:{params:Promise<{gameId:number}>}) {
         2. Then Fetch Involved Companies Data from involved Companies Data
         3. From this, take company id
         4. Get data from Companies Endpoint
-
     */
+   
     const involvedcompaniesQuery = useQuery({
         queryKey:[`involved_companies_${gameId}`],
         queryFn:async()=>{

@@ -65,6 +65,10 @@ function HighestRated() {
         }
     }
 
+    if(gameQuery.isError){
+        return (<div>Connection Error. Plase Try Refreshing the Page</div>)
+    }
+
     return (<div className="mt-12 ml-12 mr-12 mb-4">
         <p className="text-white text-3xl">
             Highest Rated

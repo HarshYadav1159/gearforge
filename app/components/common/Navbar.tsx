@@ -21,7 +21,7 @@ function NavBar() {
         <div className="fixed z-50 h-fit p-3.5 w-full bg-[#242528] border-b border-black shadow-md shadow-black/50 flex justify-between items-center">
             <div className="hidden md:block">Logo</div>
             <MdMenu className="md:hidden" onClick={()=>{dispatch(togglePanel())}}/>
-            <SearchBar className="bg-[#161719] rounded-xl px-2 py-1 w-xs gap-2 items-center hidden md:flex" type="text" name="game_search_field" placeholder="Search Game"/>
+            <SearchBar className="bg-[#161719] px-2 py-1 w-xs gap-2 items-center hidden md:flex" type="text" name="game_search_field" placeholder="Search Game"/>
             <div className="flex gap-4 h-full ">
                 {navLink.map((link)=>{
                     const isActive = pathName===link.href

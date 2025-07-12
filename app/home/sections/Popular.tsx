@@ -38,7 +38,7 @@ function Popular() {
 
     const gameQuery = useQuery({
         queryFn: async () => {
-            // console.log(gameIds)
+            
             const response = await axios.post('/api/games', `fields *; where id=(${gameIds.join(",")});`, {
                 headers: {
                     'Client-ID': '8t38bg3wjw6cfu643bmvww73yp3d0h',
@@ -68,7 +68,7 @@ function Popular() {
 
     if (popularQuery.isFetched) {
         if (gameQuery.isLoading) {
-            return (<LoadingSpinner/>)
+            return (<LoadingSpinner />)
         }
         if (gameQuery.isError) {
             return (<div></div>)
@@ -85,8 +85,8 @@ function Popular() {
 
         <div className="flex flex-col">
             <DraggableScroll>
-                {gameQuery.data.map((value:GameCardModel, index: number) => {
-                    return (<div key={index}><GameCard game={value}/></div>)
+                {gameQuery.data.map((value: GameCardModel, index: number) => {
+                    return (<div key={index}><GameCard game={value} /></div>)
                 })}
             </DraggableScroll>
 

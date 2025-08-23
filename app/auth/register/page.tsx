@@ -19,7 +19,7 @@ import {v4 as uuidv4 } from "uuid"
 
 function Register() {
 
-     const router = useRouter()
+    const router = useRouter()
     const [name, setName] = useState<string>('')
     const [userName, setUserName] = useState<string>('')
     const [email, setEmail] = useState<string>('')

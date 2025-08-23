@@ -5,6 +5,9 @@ import Link from 'next/link'
 import { MdMenu } from "react-icons/md";
 import { useAppDispatch,  } from "@/app/hooks";
 import { togglePanel } from "./side_panel/sidePanelSlice";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const navLink = [{name:'Home', href:'/'},
     {name:'Browse', href:'/browse_games'},
@@ -15,6 +18,16 @@ const navLink = [{name:'Home', href:'/'},
 function NavBar() {
 
     const pathName:string = usePathname()
+    const [isLoggedIn, setLogin] = useState<boolean>(false)
+
+    useEffect(()=>{
+        if(!isLoggedIn){
+          //Login on behalf of user 
+          //If token expired then keep them logged out
+          //          
+        }
+    })
+
     // const isSidePanelOpen = useAppSelector((state)=>state.sidePanel.isOpen)
     const dispatch = useAppDispatch()
     return (<>

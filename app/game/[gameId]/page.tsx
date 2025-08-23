@@ -9,8 +9,7 @@ import {useSearchParams } from "next/navigation"
 import React from "react"
 import GameDetails from "./game_details/GameDetails"
 import { useAppSelector } from "@/app/hooks"
-
-//========================================TODO : CONVERT VALUES LIKE INVOLVED COMPANIES
+import { useCoverQuery, useGameQuery } from "../hooks/game"
 
 interface InvolvedCompanyData{
     id:number,
@@ -43,28 +42,30 @@ function GamePage({params}:{params:Promise<{gameId:number}>}) {
     }
 
     //Query To get All Game Data : Mapping to endpoint : https://api.igdb.com/v4/games
-    const gameQuery = useQuery({
-        queryFn: async () => {
-            const response = await axios.post('/api/games', `fields *; where id=${gameId};`, {
-                headers: headerObject
-            })
-            return response.data
-        },
-        queryKey: [`game_${gameId}`]
-    })
+    // const gameQuery = useQuery({
+    //     queryFn: async () => {
+    //         const response = await axios.post('/api/games', `fields *; where id=${gameId};`, {
+    //             headers: headerObject
+    //         })
+    //         return response.data
+    //     },
+    //     queryKey: [`game_${gameId}`]
+    // })
 
-    const {data:gameCover, isLoading:coverIsLoading, isFetched:coverFetched} = useQuery({
-        queryFn:async()=>{
-            const response = await axios.post('/api/covers', `fields game,height,image_id,url; where game = ${gameId};`,{
-                headers:headerObject
-            })
-            return response.data
-        },
+    const gameQuery = useGameQuery(gameId)
 
-        queryKey:[`${gameId}_cover`],
-        enabled:coverId==null
-    })
+    const {data:gameCover, isLoading:coverIsLoading, isFetched:coverFetched} = useCoverQuery(gameId, coverId!)
+    // const {data:gameCover, isLoading:coverIsLoading, isFetched:coverFetched} = useQuery({
+    //     queryFn:async()=>{
+    //         const response = await axios.post('/api/covers', `fields game,height,image_id,url; where game = ${gameId};`,{
+    //             headers:headerObject
+    //         })
+    //         return response.data
+    //     },
 
+    //     queryKey:[`${gameId}_cover`],
+    //     enabled:coverId==null
+    // })
 
     /*
         Publishers List will be retrieved by following steps:

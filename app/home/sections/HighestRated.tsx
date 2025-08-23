@@ -18,7 +18,7 @@ function HighestRated() {
         queryKey: ['highest_rated'],
         queryFn: async () => {
 
-            const response = await axios.post(`/api/games`, 'fields *;', {
+            const response = await axios.post(`/api/games`, 'fields id, cover; sort rating desc;', {
                 headers: {
                     'Client-ID': '8t38bg3wjw6cfu643bmvww73yp3d0h',
                     'Authorization': 'Bearer ' + apiKey
@@ -48,7 +48,7 @@ function HighestRated() {
     })
 
     if (gameQuery.isLoading) {
-        return <LoadingSpinner/>
+        return <LoadingSpinner />
     }
 
     if (gameQuery == null) {
@@ -57,12 +57,16 @@ function HighestRated() {
 
     if (gameQuery.isFetched) {
         if (coverQuery.isLoading) {
-            return (<LoadingSpinner/>)
+            return (<LoadingSpinner />)
         }
 
         if (coverQuery.isError) {
             return (<div>Error Loading Cover</div>)
         }
+    }
+
+    if(gameQuery.isError){
+        return (<div>Connection Error. Plase Try Refreshing the Page</div>)
     }
 
     return (<div className="mt-12 ml-12 mr-12 mb-4">
@@ -76,7 +80,7 @@ function HighestRated() {
                 {gameQuery.data.map((value: GameCardModel, index: number) => {
 
                     value.cover = coverQuery.data.find((currElem: CoverArt) => currElem.game === value.id)
-                    // console.log(value.cover.url)
+            
                     return (<div key={index}><GameCard game={value} /></div>)
                 })}
             </DraggableScroll>

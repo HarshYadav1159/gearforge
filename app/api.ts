@@ -21,12 +21,36 @@ const API_BASE_URL = "http://localhost:8080"
 
 export async function login(data:LoginData){
 
-    const response = await axios.post(`${API_BASE_URL}/login`,data)
-    //This might return data along with cookie 
+    const response = await axios.post(`${API_BASE_URL}/login`,data, {
+       //Set this otherwise cookies won't be retrieved or send
+        withCredentials:true
+    })
     return response.data
 }
 
 export async function register(data:RegistrationData){
     const response = await axios.post(`${API_BASE_URL}/register`, data)
+    return response.data
+}
+
+export async function autoLogin(){
+    const response = await axios.get(`${API_BASE_URL}/me`, {
+        withCredentials:true
+    })
+    return response.data
+}
+
+export async function refreshToken() {
+    console.log("Refresh Token triggered")
+    const response = await axios.post(`${API_BASE_URL}/refresh`, null, {
+        withCredentials:true
+    })
+    return response.data
+}
+
+export async function logout(){
+    const response = await axios.post(`${API_BASE_URL}/logout`, null, {
+        withCredentials:true
+    })
     return response.data
 }

@@ -1,20 +1,21 @@
 'use client'
-import { register, RegistrationData } from "@/app/api"
+import { login, register, RegistrationData } from "@/app/api"
 import { useMutation } from "@tanstack/react-query"
 import { AxiosError } from "axios"
-import { error } from "console"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { ChangeEvent, useEffect, useState } from "react"
 import { MdVisibility } from "react-icons/md";
 import { MdVisibilityOff } from "react-icons/md";
-import {v4 as uuidv4 } from "uuid"
+import { v4 as uuidv4 } from "uuid"
+
 /*
     Register User:
 
     <> For Confirm password field, check if the user enters the correct password or not, prompt on every click if the password doesn't match
     <> When User clicks 'Login' -> Check for error, if error 401 recieved, then prompt user to re-enter different user name
     <> On submission : Check -> If password is at least 8 characters long, if not then prompt user 
+
 */
 
 function Register() {
@@ -34,8 +35,8 @@ function Register() {
     const [isUserExist, setUserExists] = useState<boolean>(false)
 
     const handleNameInput = (e: ChangeEvent<HTMLInputElement>) => { setName(e.target.value) }
-    const handleUserNameInput = (e: ChangeEvent<HTMLInputElement>) => { 
-        setUserName(e.target.value) 
+    const handleUserNameInput = (e: ChangeEvent<HTMLInputElement>) => {
+        setUserName(e.target.value)
         setUserExists(false)
     }
 
@@ -63,18 +64,28 @@ function Register() {
 
     }, [confirmPassword, password, setConfirmPassword, setPassword])
 
-    const newUserData: RegistrationData = {user_id:uuidv4(), name: name, email: email, user_name: userName, password: password }
+    const newUserData: RegistrationData = { user_id: uuidv4(), name: name, email: email, user_name: userName, password: password }
 
+     const loginUser = useMutation({
+        mutationKey:['login_user'],
+        mutationFn:async()=> login({email:email, password:password}),
+        onSuccess:()=>{
+            router.push("/")
+        }
+    })
+    
     const registerUser = useMutation({
         mutationKey: ['register_user'],
         mutationFn: async () => register(newUserData),
         onError: (error: AxiosError) => {
-            if(error.response?.status===403){
+            if (error.response?.status === 403) {
                 setUserExists(true)
             }
         },
-        onSuccess:()=>{
-                router.push("/")
+        onSuccess: () => {
+            //On Sucessfull registration Login user into our platform
+            loginUser.mutate()
+            console.log("user logged in successfully")
         }
     })
 

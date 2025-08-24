@@ -5,9 +5,8 @@ export interface User {
   email:string;
   current_team?: string
   past_teams? : string[]
-  participated_tournaments: string[];
-  won_tournaments: string[]; //Will have tournament id which are won by user
-  password: string;
+  participated_tournaments?: string[];
+  won_tournaments?: string[]; //Will have tournament id which are won by user
   division: number; //There will be 3 divisions, By defeault user will start with division 3
   discord_id?: string;
 }

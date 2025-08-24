@@ -75,8 +75,8 @@ function Popular() {
         }
     }
 
-    const data: Popularity[] = popularQuery.data
-    console.log(data)
+    // const data: Popularity[] = popularQuery.data
+    // console.log(data)
 
     return (<div className="ml-12 mr-12 mb-4">
         <p className="text-white text-3xl">

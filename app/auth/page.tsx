@@ -15,6 +15,9 @@ function AuthenticationPage() {
     const router = useRouter()
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
+    const [isValidEmail, setIsValidEmail] = useState<boolean>(true)
+    const [isValidPassword, setIsValidPassword] = useState<boolean>(true)
+
     const handleEmailInput = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)
     const handlePasswordInput = (e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)
     const dispatch = useAppDispatch()
@@ -26,6 +29,8 @@ function AuthenticationPage() {
         mutationKey: ['login_user'],
         mutationFn: async () => login({ email: email, password: password }),
         onSuccess: () => {
+            setIsValidEmail(true)
+            setIsValidPassword(true)
             dispatch(loginUser())
             router.push("/")
             console.log("User Logged in Successfully")
@@ -40,6 +45,22 @@ function AuthenticationPage() {
         login_user.mutate()
     }
 
+    useEffect(()=>{
+        
+        if(login_user.isError){
+            switch(login_user.error.status){
+                case 404:
+                    setIsValidEmail(false)
+                    break;
+                case 401:
+                    setIsValidEmail(true)
+                    setIsValidPassword(false)
+                    break;
+            }
+        }
+
+    },[login_user.isError])
+
     return (<>
         <div className="flex justify-center items-center h-screen">
 
@@ -48,7 +69,9 @@ function AuthenticationPage() {
                 <h1 className="text-2xl text-white self-center mt-2">Sign in</h1>
                 <div className="p-2 flex flex-col gap-3 mt-2">
                     <input onChange={handleEmailInput} className="rounded-xl bg-[#161719] w-full p-2" placeholder="Enter Your Email"></input>
+                     <span className={isValidEmail ? "hidden" : ""}><p className="text-red-600" >Email does not exist</p></span>
                     <input onChange={handlePasswordInput} className="rounded-xl bg-[#161719] w-full p-2" placeholder="Enter Your Password"></input>
+                    <span className={isValidPassword ? "hidden" : ""}><p className="text-red-600" >Incorrect Password</p></span>
                     <p className="ml-1 text-[0.9rem] hover:underline cursor-pointer w-fit">Forgot Password ?</p>
                     <div className="flex gap-2">
                         <button onClick={handleLogin} className="border p-2 w-full rounded-xl cursor-pointer hover:bg-green-500 hover:text-white transition-all duration-200 ease-in-out">Login</button>

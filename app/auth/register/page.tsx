@@ -33,6 +33,7 @@ function Register() {
     const [modalOpen, setModalOpen] = useState(false);
     const [modalMsg, setModalMsg] = useState("");
     const [isUserExist, setUserExists] = useState<boolean>(false)
+    const [isEmailExist, setEmailExist] = useState<boolean>(false)
 
     const handleNameInput = (e: ChangeEvent<HTMLInputElement>) => { setName(e.target.value) }
     const handleUserNameInput = (e: ChangeEvent<HTMLInputElement>) => {
@@ -81,6 +82,11 @@ function Register() {
             if (error.response?.status === 403) {
                 setUserExists(true)
             }
+
+            if(error.response?.status==409){
+                console.log(error.code)
+                setEmailExist(true)
+            }
         },
         onSuccess: () => {
             //On Sucessfull registration Login user into our platform
@@ -121,6 +127,7 @@ function Register() {
             <div className="w-full">
                 <input onChange={handleEmailInput} className="p-2 bg-[#161719] rounded w-full" placeholder="Email"></input>
             </div>
+              <span className={!isEmailExist ? "hidden" : ""}><p className="text-red-600" >Email Already Exists! Try Signing In</p></span>
             <div className="relative w-full ">
                 <input onChange={handlePasswordInput} className="p-2 bg-[#161719] rounded w-full" type={isPasswordVisible ? "text" : "password"} placeholder="Password"></input>
                 <div onClick={() => setPasswordVisible(prevState => !prevState)} className="absolute right-3 p-1 top-1/2 -translate-y-1/2 hover:bg-neutral-700 hover:rounded-2xl cursor-pointer text-white select-none text-xl">{isPasswordVisible ? <MdVisibility /> : <MdVisibilityOff />}</div>

@@ -4,6 +4,7 @@ import axios from "axios";
         -> Both of them will be referenced in files /auth/page.tsx & /auth/register/page.tsx
         -> Hence they are exported
 */
+
 export interface LoginData{
     email:string
     password:string
@@ -52,5 +53,14 @@ export async function logout(){
     const response = await axios.post(`${API_BASE_URL}/logout`, null, {
         withCredentials:true
     })
+    return response.data
+}
+
+export async function getUserData(user_id:string){
+    console.log("User id : ", user_id)
+    const response = await axios.post(`${API_BASE_URL}/user`, {"user_id":user_id}, {
+        withCredentials:true
+    })
+
     return response.data
 }

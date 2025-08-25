@@ -13,11 +13,12 @@ function NavBar() {
   // const [isLoggedIn, setLogin] = useState<boolean>(false)
   // const userId: string = useAppSelector(state => state.users.user.user_id)
   const isLoggedIn = useAppSelector(state=>state.users.isLoggedIn)
+  const username = useAppSelector(state=>state.users.user.user_name)
   const dispatch = useAppDispatch()
   const navLink = [{ name: 'Home', href: '/' },
   { name: 'Browse', href: '/browse_games' },
   { name: 'Tournaments', href: '/tournaments' },
-  { name: isLoggedIn ? "Username" : 'Sign In', href: isLoggedIn? '/user_profile' : '/auth' }
+  { name: isLoggedIn ? `${username}` : 'Sign In', href: isLoggedIn? '/user_profile' : '/auth' }
   ]
 
   // useEffect(() => {

@@ -1,10 +1,6 @@
 "use client"
 
-import { addGenre } from "@/app/genres/genreSlice";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { Dispatch } from "@reduxjs/toolkit";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import {  useAppSelector } from "@/app/hooks";
 
 import Link from "next/link";
 import { useState } from "react";
@@ -12,57 +8,12 @@ import { MdCategory } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { MdArrowForward } from "react-icons/md";
-// const genreList:string[] = ['Tactical Shooter', 'RPG', 'Racing']
-
-const apiKey: string = process.env.NEXT_PUBLIC_API_ACCESS_TOKEN!
-
-const requestHeaders = {
-    'Client-ID': '8t38bg3wjw6cfu643bmvww73yp3d0h',
-    'Authorization': 'Bearer ' + apiKey
-}
-
-// interface GenreQueryResponse{
-//     id:number
-//     name:string
-// }
 
 function GenreList() {
 
     const [expandedGenre, setExpand] = useState<boolean>(false)
     const genreList = useAppSelector((state)=>state.genres.genres)
-    // const [isTransferGenre, setTransfer] = useState<boolean>(true)
-    // const genreQuery = useQuery({
-    //     queryFn:async()=>{
-    //             const response = await axios.post('/api/genres','fields id, name; limit 10;',{
-    //                 headers:requestHeaders
-    //             } )
-    //             return response.data
-    //     },
-    //     queryKey:['genre_list'],
-    //     // enabled:expandedGenre
-    // })
-
-    // const dispatch : Dispatch = useAppDispatch()
-    // const genreList : GenreQueryResponse[]= genreQuery.data
-
-    // const {data:genres = [], isFetched:genresFetched} = useQuery({
-    //     queryFn:async()=>{
-    //             const response = await axios.post('/api/genres','fields id, name; limit 50;',{
-    //                 headers:requestHeaders
-    //             } )
-    //             return response.data
-    //     },
-    //     queryKey:['all_genres'],
-    // })
-
-    // if(genresFetched && isTransferGenre){
-    //     genres.forEach((element:GenreQueryResponse) => {
-    //         dispatch(addGenre(element))
-    //     });
-    //     setTransfer(false)
-    // }
-
-
+    
     return (<>
         <div className="relative flex flex-col gap-2 select-none">
             {/* Show this when Genre is not expanded */}

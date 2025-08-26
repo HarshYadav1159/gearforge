@@ -4,48 +4,18 @@ import GameCard from "@/app/components/common/GameCard"
 import LoadingSpinner from "@/app/components/common/LoadingSpinner"
 import { CoverArt } from "@/app/models/cover_art_model"
 import { GameCardModel } from "@/app/models/game_card_model"
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
-
-// const highestRated:string[] = ['Game 1', 'Game 2', 'Game 3']
-const apiKey = process.env.NEXT_PUBLIC_API_ACCESS_TOKEN
+import { useCoversQuery, useHighestRatedQuery } from "./hooks/game"
 
 function HighestRated() {
 
     let gameIds: string[] = []
-
-    const gameQuery = useQuery({
-        queryKey: ['highest_rated'],
-        queryFn: async () => {
-
-            const response = await axios.post(`/api/games`, 'fields id, cover; sort rating desc;', {
-                headers: {
-                    'Client-ID': '8t38bg3wjw6cfu643bmvww73yp3d0h',
-                    'Authorization': 'Bearer ' + apiKey
-                }
-            })
-            return response.data
-        }
-    })
-
+    const gameQuery = useHighestRatedQuery()
+     
     if (gameQuery.isFetched) {
         gameIds = gameQuery.data.map((e: GameCardModel) => e.id)
     }
-    const coverQuery = useQuery({
-        queryFn: async () => {
-            const response = await axios.post('/api/covers', `fields id,game,height,url,width, image_id; where game = (${gameIds.join(",")});`, {
-                headers: {
-                    'Client-ID': '8t38bg3wjw6cfu643bmvww73yp3d0h',
-                    'Authorization': 'Bearer ' + apiKey
-                }
-            })
-            return response.data
-        },
 
-        enabled: gameQuery.isFetched,
-
-        queryKey: ['game_cover']
-    })
+    const coverQuery = useCoversQuery(gameQuery.isFetched, gameIds) //Get covers of these games   
 
     if (gameQuery.isLoading) {
         return <LoadingSpinner />
@@ -63,6 +33,10 @@ function HighestRated() {
         if (coverQuery.isError) {
             return (<div>Error Loading Cover</div>)
         }
+    }
+
+    if(gameQuery.isError){
+        return (<div>Connection Error. Plase Try Refreshing the Page</div>)
     }
 
     return (<div className="mt-12 ml-12 mr-12 mb-4">

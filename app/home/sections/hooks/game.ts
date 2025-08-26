@@ -31,7 +31,6 @@ export function useHighestRatedQuery () {
 export function useCoversQuery(gameQueryisFetched:boolean, gameIds:string[]){
     
     // console.log("Is Game Query Fetched : ", gameQueryisFetched, "For Games : ", gameIds)
-
     const coverQuery = useQuery({
         queryFn: async () => {
             const response = await axios.post('/api/covers', `fields id,game,height,url,width, image_id; where game = (${gameIds.join(",")});`, {

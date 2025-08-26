@@ -22,7 +22,7 @@ export function useGameQuery(gameId: number){
     })
 }
 
-export function useCoverQuery(gameId: number, coverId: string){
+export function useCoverQuery(gameId: number, coverId?: string| null){
         
     return useQuery({
         queryFn:async()=>{
@@ -34,5 +34,40 @@ export function useCoverQuery(gameId: number, coverId: string){
 
         queryKey:[`${gameId}_cover`],
         enabled:coverId==null
+    })
+}
+
+export function useGenreQuery(genreId: number, page: number = 1, pageSize: number = 10){
+
+    return useQuery({
+        queryFn: async () => {
+            const offset = (page - 1) * pageSize
+
+            // first request: genres referenced directly
+            const body1 = `fields *; where genres=${genreId}; limit ${pageSize}; offset ${offset};`
+            const response1 = await axios.post('/api/games', body1, {
+                headers: requestHeaders
+            })
+
+            // second request: genre id enclosed in parentheses
+            const body2 = `fields *; where genres=(${genreId}); limit ${pageSize}; offset ${offset};`
+            const response2 = await axios.post('/api/games', body2, {
+                headers: requestHeaders
+            })
+
+            const data1 = Array.isArray(response1.data) ? response1.data : []
+            const data2 = Array.isArray(response2.data) ? response2.data : []
+
+            // combine and dedupe by id
+            const combined = [...data1, ...data2]
+            const dedupMap = new Map<number, any>()
+            for (const item of combined) {
+                if (item && typeof item.id === "number") dedupMap.set(item.id, item)
+            }
+            const result = Array.from(dedupMap.values())
+
+            return result
+        },
+        queryKey: [`genre_${genreId}`, `page_${page}`, `size_${pageSize}`]
     })
 }

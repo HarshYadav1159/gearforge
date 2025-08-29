@@ -72,7 +72,7 @@ function AuthenticationPage() {
                      <span className={isValidEmail ? "hidden" : ""}><p className="text-red-600" >Email does not exist</p></span>
                     <input onChange={handlePasswordInput} className="rounded-xl bg-[#161719] w-full p-2" placeholder="Enter Your Password"></input>
                     <span className={isValidPassword ? "hidden" : ""}><p className="text-red-600" >Incorrect Password</p></span>
-                    <p className="ml-1 text-[0.9rem] hover:underline cursor-pointer w-fit">Forgot Password ?</p>
+                    <Link href={"auth/forgot_pwd"}><p className="ml-1 text-[0.9rem] hover:underline cursor-pointer w-fit">Forgot Password ?</p></Link>
                     <div className="flex gap-2">
                         <button onClick={handleLogin} className="border p-2 w-full rounded-xl cursor-pointer hover:bg-green-500 hover:text-white transition-all duration-200 ease-in-out">Login</button>
                         <Link className="w-full" href={"/auth/register"}><button className="border p-2 w-full rounded-xl cursor-pointer hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out">Register</button ></Link>

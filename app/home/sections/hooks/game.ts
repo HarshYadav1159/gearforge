@@ -16,7 +16,7 @@ export function useHighestRatedQuery () {
     queryKey: ["highest_rated"],
     queryFn: async () => {
       const response = await axios.post(
-        `/api/games`,
+        `/igdb/games`,
         "fields id, cover; sort rating desc;",
         {
           headers: requestHeaders,
@@ -33,7 +33,7 @@ export function useCoversQuery(gameQueryisFetched:boolean, gameIds:string[]){
     // console.log("Is Game Query Fetched : ", gameQueryisFetched, "For Games : ", gameIds)
     const coverQuery = useQuery({
         queryFn: async () => {
-            const response = await axios.post('/api/covers', `fields id,game,height,url,width, image_id; where game = (${gameIds.join(",")});`, {
+            const response = await axios.post('/igdb/covers', `fields id,game,height,url,width, image_id; where game = (${gameIds.join(",")});`, {
                 headers: requestHeaders
             })
             return response.data

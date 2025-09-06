@@ -4,14 +4,17 @@ import { useState } from "react"
 import { store } from './store'
 import { Provider } from "react-redux"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { SessionProvider } from "next-auth/react"
+
 function Providers({ children }: { children: React.ReactNode }) {
     const [queryClient] = useState(() => new QueryClient())
 
     return (<Provider store={store}>
         <QueryClientProvider client={queryClient}>
-            
+            <SessionProvider>  
             {/* REMOVE THIS DURING PRODUCTION */}
             {children}
+            </SessionProvider> 
             <ReactQueryDevtools initialIsOpen={false}/>
         </QueryClientProvider>
     </Provider>)

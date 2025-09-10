@@ -41,10 +41,10 @@ function GamePage({params}:{params:Promise<{gameId:number}>}) {
         'Authorization': 'Bearer ' + apiKey
     }
 
-    //Query To get All Game Data : Mapping to endpoint : https://api.igdb.com/v4/games
+    //Query To get All Game Data : Mapping to endpoint : https://igdb.igdb.com/v4/games
     // const gameQuery = useQuery({
     //     queryFn: async () => {
-    //         const response = await axios.post('/api/games', `fields *; where id=${gameId};`, {
+    //         const response = await axios.post('/igdb/games', `fields *; where id=${gameId};`, {
     //             headers: headerObject
     //         })
     //         return response.data
@@ -57,7 +57,7 @@ function GamePage({params}:{params:Promise<{gameId:number}>}) {
     const {data:gameCover, isLoading:coverIsLoading, isFetched:coverFetched} = useCoverQuery(gameId, coverId!)
     // const {data:gameCover, isLoading:coverIsLoading, isFetched:coverFetched} = useQuery({
     //     queryFn:async()=>{
-    //         const response = await axios.post('/api/covers', `fields game,height,image_id,url; where game = ${gameId};`,{
+    //         const response = await axios.post('/igdb/covers', `fields game,height,image_id,url; where game = ${gameId};`,{
     //             headers:headerObject
     //         })
     //         return response.data
@@ -79,7 +79,7 @@ function GamePage({params}:{params:Promise<{gameId:number}>}) {
         queryKey:[`involved_companies_${gameId}`],
         queryFn:async()=>{
             // console.log(`fields id,company; where id = (${involved_companies.join(",")});`)
-            const response = await axios.post('/api/involved_companies', `fields id,company; where id = (${involved_companies_id.join(",")});`, {
+            const response = await axios.post('/igdb/involved_companies', `fields id,company; where id = (${involved_companies_id.join(",")});`, {
                 headers:headerObject
             })
            
@@ -93,7 +93,7 @@ function GamePage({params}:{params:Promise<{gameId:number}>}) {
         queryKey:[`companies_for_${gameId}`],
         queryFn:async()=>{
             // console.log(`fields name,id; where id = (${companies.join(",")});`)
-            const response = await axios.post('/api/companies', `fields name,id; where id = (${companies_id.join(",")});`,{
+            const response = await axios.post('/igdb/companies', `fields name,id; where id = (${companies_id.join(",")});`,{
                 headers:headerObject
             })
             return response.data

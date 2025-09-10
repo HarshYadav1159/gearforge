@@ -8,7 +8,6 @@ function ForgotPassword(){
 
         const [email, setEmail] = useState<string>("")
 
-
         const handleEmailInput = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)
                   
             useEffect(() => {
@@ -34,7 +33,7 @@ function ForgotPassword(){
                             <input onChange={handleEmailInput} className="p-2 bg-[#161719] rounded w-full" type={"text"} placeholder="Email"></input>
                         </div>
                         
-                        <span>{false? <p className="text-red-600" >Passwords do not match</p> : ""}</span>
+                        <span>{false? <p className="text-red-600" >User does not exist</p> : ""}</span>
                         <div className="flex gap-2">
                           
                             <button onClick={handleSendResetEmailClick} className="border p-2 w-full rounded-xl cursor-pointer hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out">Send Password Reset Mail</button >

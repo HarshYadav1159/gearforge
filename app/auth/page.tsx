@@ -7,8 +7,9 @@ import React, { ChangeEvent, useEffect, useState } from "react"
 import { login } from "../api"
 import { loginUser } from "../userSlice"
 import { useRouter } from "next/navigation"
-import { AxiosError } from "axios"
-import { useAppDispatch } from "../hooks"
+import axios, { AxiosError } from "axios"
+import { useAppDispatch, useAppSelector } from "../hooks"
+import { signIn, useSession } from "next-auth/react"
 
 function AuthenticationPage() {
 
@@ -17,7 +18,9 @@ function AuthenticationPage() {
     const [password, setPassword] = useState<string>("")
     const [isValidEmail, setIsValidEmail] = useState<boolean>(true)
     const [isValidPassword, setIsValidPassword] = useState<boolean>(true)
-
+    const [hasProfile, setHasProfile] = useState<boolean>(false)
+    const { data: session, status } = useSession()
+    const isLoggedIn = useAppSelector((state) => state.users.isLoggedIn)
     const handleEmailInput = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)
     const handlePasswordInput = (e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)
     const dispatch = useAppDispatch()
@@ -35,20 +38,19 @@ function AuthenticationPage() {
             router.push("/")
             console.log("User Logged in Successfully")
         },
-        onError:(error:AxiosError)=>{
+        onError: (error: AxiosError) => {
             console.log(error)
         }
     })
 
-    const handleLogin = (e:React.FormEvent) => {
+    const handleLogin = (e: React.FormEvent) => {
         e.preventDefault()
         login_user.mutate()
     }
 
-    useEffect(()=>{
-        
-        if(login_user.isError){
-            switch(login_user.error.status){
+    useEffect(() => {
+        if (login_user.isError) {
+            switch (login_user.error.status) {
                 case 404:
                     setIsValidEmail(false)
                     break;
@@ -58,8 +60,40 @@ function AuthenticationPage() {
                     break;
             }
         }
+        // ================================================= THIS REQUIRES HEAVY MODIFICATIONS
+        if (status === "authenticated" && session.user && !isLoggedIn) {
+            (async () => {
+                const response = await axios.post('http://localhost:8080/auth/oauth/upsert', {
+                    input: {
+                        provider: session.user?.provider,
+                        providerAccountId: session.user?.providerAccountId,
+                        email: session.user?.email,
+                        name: session.user?.name,
+                        image: session.user?.image
+                    }
+                }, { withCredentials: true })
 
-    },[login_user.isError])
+                if (response.status !== 200) {
+                    //HANDLE ERROR RIGHT HERE  
+                }
+
+                if (response.data.hasProfile) {
+                    setHasProfile(true)
+                }
+                dispatch(loginUser())
+            })()
+        }
+    }, [login_user.isError, status, session, isLoggedIn, dispatch])
+
+    useEffect(() => {
+      
+        if (!isLoggedIn) return
+
+        router.replace(hasProfile ? "/" : "/profile_setup")
+        router.refresh()
+        //MODIFY THIS ACCORDING TO THE REDIRECT URL PAGE LIKE IF USER FIRST WENT ON TOURNAMENT REGISTRATION PAGE, THEN REDIRECT
+        //THEM BACK TO TOURNAMENT REGISTRATION PAGE IF 
+    }, [isLoggedIn, hasProfile, router])
 
     return (<>
         <div className="flex justify-center items-center h-screen">
@@ -69,7 +103,7 @@ function AuthenticationPage() {
                 <h1 className="text-2xl text-white self-center mt-2">Sign in</h1>
                 <div className="p-2 flex flex-col gap-3 mt-2">
                     <input onChange={handleEmailInput} className="rounded-xl bg-[#161719] w-full p-2" placeholder="Enter Your Email"></input>
-                     <span className={isValidEmail ? "hidden" : ""}><p className="text-red-600" >Email does not exist</p></span>
+                    <span className={isValidEmail ? "hidden" : ""}><p className="text-red-600" >Email does not exist</p></span>
                     <input onChange={handlePasswordInput} className="rounded-xl bg-[#161719] w-full p-2" placeholder="Enter Your Password"></input>
                     <span className={isValidPassword ? "hidden" : ""}><p className="text-red-600" >Incorrect Password</p></span>
                     <Link href={"auth/forgot_pwd"}><p className="ml-1 text-[0.9rem] hover:underline cursor-pointer w-fit">Forgot Password ?</p></Link>
@@ -77,9 +111,14 @@ function AuthenticationPage() {
                         <button onClick={handleLogin} className="border p-2 w-full rounded-xl cursor-pointer hover:bg-green-500 hover:text-white transition-all duration-200 ease-in-out">Login</button>
                         <Link className="w-full" href={"/auth/register"}><button className="border p-2 w-full rounded-xl cursor-pointer hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out">Register</button ></Link>
                     </div>
+                    <div className="flex items-center gap-3 my-4">
+                        <div className="h-px bg-gray-300 flex-1" />
+                        <span className="text-sm text-gray-500">or</span>
+                        <div className="h-px bg-gray-300 flex-1" />
+                    </div>
                     <div className="flex flex-col gap-2">
-                        <button className="flex w-full items-center bg-blue-600 cursor-pointer hover:border"><Image className="bg-white" src={"/google-symbol.png"} width={40} height={40} alt="Google Logo" /><p className="w-full self-center text-white">Sign in With Google</p></button>
-                        <button className="flex w-full items-center bg-[#5968F0] cursor-pointer hover:border"><Image className="bg-white" src={"/discord-symbol.png"} width={40} height={50} alt="Discord logo" /><p className="w-full self-center text-white">Sign in With Discord</p></button >
+                        <button type="button" onClick={() => signIn("google")} className="flex w-full items-center bg-blue-600 cursor-pointer hover:border"><Image className="bg-white" src={"/google-symbol.png"} width={40} height={40} alt="Google Logo" /><p className="w-full self-center text-white">Sign in With Google</p></button>
+                        {/* <button className="flex w-full items-center bg-[#5968F0] cursor-pointer hover:border"><Image className="bg-white" src={"/discord-symbol.png"} width={40} height={50} alt="Discord logo" /><p className="w-full self-center text-white">Sign in With Discord</p></button > */}
                     </div>
                 </div>
             </form>

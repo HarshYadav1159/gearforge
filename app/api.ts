@@ -1,4 +1,5 @@
 import axios from "axios";
+import { User } from "./models/user_model";
 /*
     Interfaces : LoginData & RegistrationData
         -> Both of them will be referenced in files /auth/page.tsx & /auth/register/page.tsx
@@ -18,9 +19,14 @@ export interface RegistrationData {
   user_name: string;
 }
 
+export interface LoginResponseData {
+  status:string
+  data : User
+}
+
 const API_BASE_URL = "http://localhost:8080";
 
-export async function login(data: LoginData) {
+export async function login(data: LoginData) : Promise<LoginResponseData> {
   const response = await axios.post(`${API_BASE_URL}/login`, data, {
     //Set this otherwise cookies won't be retrieved or send
     withCredentials: true,

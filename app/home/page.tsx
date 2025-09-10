@@ -5,7 +5,7 @@ import Carousel from "./Carousel";
 import HighestRated from "./sections/HighestRated";
 import Popular from "./sections/Popular";
 import { autoLogin, getUserData, refreshToken } from "../api";
-import { useAppDispatch } from "../hooks";
+import { useAppDispatch} from "../hooks";
 import { setUser, setUserId } from "../userSlice";
 import { useEffect, useState } from "react";
 
@@ -15,12 +15,14 @@ function HomePage() {
     const [shouldRefresh, setShouldRefresh] = useState<boolean>(false)
     const [fetchUserData, setFetchUserData] = useState<boolean>(false)
     // const user_id = useAppSelector((state) => state.users.user.user_id)
+    // const isLoggedIn = useAppSelector((state)=>state.users.isLoggedIn)
 
     const auto_login = useQuery({
         queryKey: ['auto_login'],
         queryFn: async () => autoLogin(),
         // refetchInterval: 5_000
-        refetchOnMount:"always"
+        refetchOnMount:"always",
+        // enabled : !isLoggedIn
     })
 
     useQuery({
@@ -48,6 +50,8 @@ function HomePage() {
             setFetchUserData(false)
             dispatch(setUser(user_query.data))
         }
+
+
     }, [auto_login.isError, user_query.isFetched])
 
 

@@ -97,6 +97,8 @@ const RegisterTournament: React.FC = () => {
             required
           />
           <label className={floatLabel(form.discord)}>Discord ID</label>
+        
+        {/* Backend Logic to Register */}
         </div>
 
         <button

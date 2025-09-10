@@ -25,7 +25,7 @@ function Popular() {
     const popularQuery = useQuery({
 
         queryFn: async () => {
-            const response = await axios.post('/api/popularity_primitives', 'fields *; sort id asc; limit 10; sort value desc;', {
+            const response = await axios.post('/igdb/popularity_primitives', 'fields *; sort id asc; limit 10; sort value desc;', {
                 headers: {
                     'Client-ID': '8t38bg3wjw6cfu643bmvww73yp3d0h',
                     'Authorization': 'Bearer ' + apiKey
@@ -39,7 +39,7 @@ function Popular() {
     const gameQuery = useQuery({
         queryFn: async () => {
             
-            const response = await axios.post('/api/games', `fields *; where id=(${gameIds.join(",")});`, {
+            const response = await axios.post('/igdb/games', `fields *; where id=(${gameIds.join(",")});`, {
                 headers: {
                     'Client-ID': '8t38bg3wjw6cfu643bmvww73yp3d0h',
                     'Authorization': 'Bearer ' + apiKey

@@ -40,7 +40,7 @@ export default function TournamentsPage() {
         <header className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold text-white">Tournaments</h1>
           <Link
-            href="/tournaments/create"
+            href="/create_tournament"
             className="inline-flex items-center gap-2 px-3 py-2 bg-amber-600 text-black font-medium rounded hover:bg-amber-500"
           >
             Create tournament

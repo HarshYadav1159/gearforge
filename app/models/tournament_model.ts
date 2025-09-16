@@ -13,4 +13,5 @@ export interface Tournament{
     tournament_division : number
     pool_price: number
     entry_fee: number
+    game_type: string
 }

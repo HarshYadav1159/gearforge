@@ -22,6 +22,7 @@ export function parseRaw(raw: any): Tournament {
     tournament_division: Number(raw.tournament_division ?? 0),
     pool_price: Number(raw.pool_price ?? 0),
     entry_fee: Number(raw.entry_fee ?? 0),
+    game_type: String(raw.game_type ?? ""),
   }
 }
 

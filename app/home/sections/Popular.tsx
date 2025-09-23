@@ -1,97 +1,128 @@
 'use client'
 
-import DraggableScroll from "@/app/components/common/DraggableScroll"
-import GameCard from "@/app/components/common/GameCard"
-import LoadingSpinner from "@/app/components/common/LoadingSpinner"
-import { GameCardModel } from "@/app/models/game_card_model"
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
+import DraggableScroll from "@/app/components/common/DraggableScroll";
+import GameCard from "@/app/components/common/GameCard";
+import LoadingSpinner from "@/app/components/common/LoadingSpinner";
+import { GameCardModel } from "@/app/models/game_card_model";
+import { CoverArt } from "@/app/models/cover_art_model";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { useCoversQuery } from "./hooks/game";
 
 interface Popularity {
-    //From Popularity primitives
-    id: number
-    game_id: number
-    value: number
-    popularity_source: number
-    external_popularity_source: number
-    [key: string]: number | string
+  id: number;
+  game_id: number;
+  value: number;
+  popularity_source?: number;
+  external_popularity_source?: number;
+  [key: string]: number | string | undefined;
 }
 
-const apiKey: string = process.env.NEXT_PUBLIC_API_ACCESS_TOKEN!
+const apiKey: string = process.env.NEXT_PUBLIC_API_ACCESS_TOKEN!;
+const clientId = '8t38bg3wjw6cfu643bmvww73yp3d0h';
 
 function Popular() {
-
-    let gameIds: string[] = []
-    const popularQuery = useQuery({
-
-        queryFn: async () => {
-            const response = await axios.post('/igdb/popularity_primitives', 'fields *; sort id asc; limit 10; sort value desc;', {
-                headers: {
-                    'Client-ID': '8t38bg3wjw6cfu643bmvww73yp3d0h',
-                    'Authorization': 'Bearer ' + apiKey
-                }
-            })
-            return response.data
-        },
-        queryKey: ['popular_games'],
-    })
-
-    const gameQuery = useQuery({
-        queryFn: async () => {
-            
-            const response = await axios.post('/igdb/games', `fields *; where id=(${gameIds.join(",")});`, {
-                headers: {
-                    'Client-ID': '8t38bg3wjw6cfu643bmvww73yp3d0h',
-                    'Authorization': 'Bearer ' + apiKey
-                }
-            })
-            return response.data
-        },
-        queryKey: ['game_data'],
-        enabled: popularQuery.isFetched
-    })
-
-    if (popularQuery.isFetched) {
-        gameIds = popularQuery.data.map((e: Popularity) => e.game_id)
-    }
-
-
-    if (popularQuery.isLoading) {
-        //Handle Card animation here
-        return (<div></div>)
-    }
-
-    if (popularQuery.isError) {
-        //Handle Card animation here
-        return (<div>Error retrieving data</div>)
-    }
-
-    if (popularQuery.isFetched) {
-        if (gameQuery.isLoading) {
-            return (<LoadingSpinner />)
+  // 1) Get popularity primitives (grab extra rows so we can dedupe to 10)
+  const popularQuery = useQuery({
+    queryKey: ['popular_games'],
+    queryFn: async () => {
+      const { data } = await axios.post<Popularity[]>(
+        '/igdb/popularity_primitives',
+        'fields id,game_id,value; sort value desc; limit 50;',
+        {
+          headers: {
+            'Client-ID': clientId,
+            Authorization: 'Bearer ' + apiKey,
+          },
         }
-        if (gameQuery.isError) {
-            return (<div></div>)
-        }
+      );
+      return data;
+    },
+    staleTime: 60_000,
+  });
+
+  // 2) Build first 10 unique IDs, preserving popularity order
+  const orderedUniqueIds: number[] = (() => {
+    if (!popularQuery.isFetched || !Array.isArray(popularQuery.data)) return [];
+    const seen = new Set<number>();
+    const out: number[] = [];
+    for (const p of popularQuery.data) {
+      const id = Number(p.game_id);
+      if (Number.isFinite(id) && !seen.has(id)) {
+        seen.add(id);
+        out.push(id);
+        if (out.length >= 10) break;
+      }
     }
+    return out;
+  })();
 
-    // const data: Popularity[] = popularQuery.data
-    // console.log(data)
+  // 3) Resolve games for those IDs and reorder to match popularity order
+  const gameQuery = useQuery({
+    queryKey: ['game_data', orderedUniqueIds],
+    enabled: popularQuery.isFetched && orderedUniqueIds.length > 0,
+    queryFn: async () => {
+      const { data } = await axios.post<GameCardModel[]>(
+        '/igdb/games',
+        `fields *; where id=(${orderedUniqueIds.join(",")}); limit ${orderedUniqueIds.length};`,
+        {
+          headers: {
+            'Client-ID': clientId,
+            Authorization: 'Bearer ' + apiKey,
+          },
+        }
+      );
+      // Reorder to match popularity order
+      const byId = new Map<number, GameCardModel>(
+        (data ?? []).map((g) => [Number(g.id), g])
+      );
+      return orderedUniqueIds
+        .map((id) => byId.get(id))
+        .filter(Boolean) as GameCardModel[];
+    },
+    staleTime: 60_000,
+  });
 
-    return (<div className="ml-12 mr-12 mb-4">
-        <p className="text-white text-3xl">
-            Recently Popular
-        </p>
+  // 4) Covers for exactly these games (hook should use a unique cache key per id set)
+  const coverIds: number[] = gameQuery.isFetched
+    ? gameQuery.data.map((g) => Number(g.id))
+    : [];
+  const coverQuery = useCoversQuery(gameQuery.isFetched, coverIds);
 
-        <div className="flex flex-col">
-            <DraggableScroll>
-                {gameQuery.data.map((value: GameCardModel, index: number) => {
-                    return (<div key={index}><GameCard game={value} /></div>)
-                })}
-            </DraggableScroll>
+  // ---- Loading / error states ----
+  if (popularQuery.isLoading) return <div></div>;
+  if (popularQuery.isError) return <div>Error retrieving data</div>;
 
-        </div>
-    </div>)
+  if (popularQuery.isFetched) {
+    if (gameQuery.isLoading) return <LoadingSpinner />;
+    if (gameQuery.isError) return <div>Failed to load games</div>;
+
+    if (coverQuery.isLoading) return <LoadingSpinner />;
+    if (coverQuery.isError) return <div>Error Loading Cover</div>;
+  }
+
+  // ---- Render ----
+  return (
+    <div className="mx-4 sm:mx-8 md:mx-12 mb-4">
+      <p className="text-white text-2xl md:text-3xl">Recently Popular</p>
+
+      <div className="flex flex-col">
+        <DraggableScroll>
+          {gameQuery.data?.map((value: GameCardModel, index: number) => {
+            // attach cover if present
+            value.cover = coverQuery.data?.find(
+              (c: CoverArt) => c.game === Number(value.id)
+            );
+            return (
+              <div key={index} className="flex-shrink-0">
+                <GameCard game={value} />
+              </div>
+            );
+          })}
+        </DraggableScroll>
+      </div>
+    </div>
+  );
 }
 
-export default Popular
+export default Popular;

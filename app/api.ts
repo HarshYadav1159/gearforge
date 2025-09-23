@@ -20,13 +20,13 @@ export interface RegistrationData {
 }
 
 export interface LoginResponseData {
-  status:string
-  data : User
+  status: string;
+  data: User;
 }
 
 const API_BASE_URL = "http://localhost:8080";
 
-export async function login(data: LoginData) : Promise<LoginResponseData> {
+export async function login(data: LoginData): Promise<LoginResponseData> {
   const response = await axios.post(`${API_BASE_URL}/login`, data, {
     //Set this otherwise cookies won't be retrieved or send
     withCredentials: true,
@@ -75,7 +75,7 @@ export async function getUserData(user_id: string) {
 }
 
 export async function verifyResetLink(token: string) {
-  console.log("Reset Token is : ", token)
+  console.log("Reset Token is : ", token);
   const response = await axios.post(
     `${API_BASE_URL}/reset_pwd/verify`,
     { token: token },
@@ -98,9 +98,44 @@ export async function updateUserPassword(user_id: string, password: string) {
   return response.data;
 }
 
-export async function requestPasswordReset(email:string){
-    const response = await axios.post(`${API_BASE_URL}/reset_pwd_req`, {"email":email}, {
-        withCredentials:true
-    })
-    return response.data
+export async function requestPasswordReset(email: string) {
+  const response = await axios.post(
+    `${API_BASE_URL}/reset_pwd_req`,
+    { email: email },
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+}
+
+export async function updateUser(username?: string, name?: string) {
+
+  //Send data according to non-null fields
+
+  if (username === null || username === "") {
+    const response = await axios.patch(
+      `${API_BASE_URL}/update_user`,
+      { name: name },
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } else if (name === "" || name === null) {
+    const response = await axios.patch(
+      `${API_BASE_URL}/update_user`,
+      { username: username },
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  }
+
+  const response = await axios.patch(`${API_BASE_URL}/update_user`, {username:username, name:name}, {
+    withCredentials:true
+  })
+  return response.data
+
 }

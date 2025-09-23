@@ -39,8 +39,8 @@ function HighestRated() {
         return (<div>Connection Error. Plase Try Refreshing the Page</div>)
     }
 
-    return (<div className="mt-12 ml-12 mr-12 mb-4">
-        <p className="text-white text-3xl">
+    return (<div className="mt-12 mx-4 sm:mx-8 md:mx-12 mb-4">
+        <p className="text-white text-2xl md:text-3xl">
             Highest Rated
         </p>
 
@@ -51,12 +51,12 @@ function HighestRated() {
 
                     value.cover = coverQuery.data.find((currElem: CoverArt) => currElem.game === value.id)
             
-                    return (<div key={index}><GameCard game={value} /></div>)
+                    return (<div key={index} className="flex-shrink-0"><GameCard game={value} /></div>)
                 })}
             </DraggableScroll>
             }
             <div className="flex flex-row-reverse">
-                <p className="p-2 cursor-pointer hover:text-white">View All Highest Rated</p>
+                {/* <p className="p-2 cursor-pointer hover:text-white">View All Highest Rated</p> */}
             </div>
         </div>
     </div>)

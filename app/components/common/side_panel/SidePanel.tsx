@@ -33,10 +33,11 @@ function SidePanel() {
                     <div >E-Sports Tournaments</div>
                 </div>
                 </Link>
-                <div className={panelListStyle}>
+                {/* WILL BE ADDED LATER */}
+                {/* <div className={panelListStyle}>
                     <MdLiveTv />
                     <div >Watch Live Tournament</div>
-                </div>
+                </div> */}
                 <GenreList />
             </div>
         </div>

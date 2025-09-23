@@ -34,7 +34,7 @@ function SearchBar(prop: SearchBarFields) {
 
     const searchQuery = useQuery({
         queryFn: async () => {
-            const response = await axios.post('/api/games', `fields id,name; search "${inputField}";`, {
+            const response = await axios.post('/igdb/games', `fields id,name; search "${inputField}";`, {
                 headers: requestHeaders
             })
             return response.data

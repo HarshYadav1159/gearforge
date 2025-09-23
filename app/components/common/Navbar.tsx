@@ -14,7 +14,7 @@ function NavBar() {
 
   const navLink = [
     { name: 'Home', href: '/' },
-    { name: 'Browse', href: '/browse_games' },
+    // { name: 'Browse', href: '/browse_games' },
     { name: 'Tournaments', href: '/tournaments' },
     //TO BE ADDED LATER
     // { name: isLoggedIn ? `${username}` : 'Sign In', href: isLoggedIn ? '/user_profile' : '/auth' }

@@ -5,7 +5,7 @@ import { GameModel } from "@/app/models/game_model"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import Image from "next/image"
-import { useSearchParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 import React from "react"
 import GameDetails from "./game_details/GameDetails"
 import { useAppSelector } from "@/app/hooks"
@@ -23,9 +23,10 @@ interface CompanyData {
 
 const apiKey: string = process.env.NEXT_PUBLIC_API_ACCESS_TOKEN!
 
-function GamePage({ params }: { params: { gameId: number } }) {
+function GamePage() {
     const queryParams = useSearchParams()
-    const { gameId } = params
+    const { gameId: gameIdStr } = useParams<{ gameId: string }>();
+    const gameId = Number(gameIdStr);
     const genreList = useAppSelector(state => state.genres.genres)
     const genres: string[] = []
     const involved_companies_id: string[] = []

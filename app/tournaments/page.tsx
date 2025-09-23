@@ -1,15 +1,15 @@
 import React from "react"
-import Link from "next/link"
-import { loadTournaments } from "./lib/tournament"
-import { Tournament } from "@/app/models/tournament_model"
-import TournamentCard from "@/app/components/common/TournamentCard"
-import DraggableScroll from "@/app/components/common/DraggableScroll"
+// import Link from "next/link"
+// import { loadTournaments } from "./lib/tournament"
+//import { Tournament } from "@/app/models/tournament_model"
+// import TournamentCard from "@/app/components/common/TournamentCard"
+// import DraggableScroll from "@/app/components/common/DraggableScroll"
 
-function isLive(t: Tournament, now = Date.now()) {
-  const start = t.start_date instanceof Date ? t.start_date.getTime() : new Date(t.start_date).getTime()
-  const end = t.end_date instanceof Date ? t.end_date.getTime() : new Date(t.end_date).getTime()
-  return start <= now && now <= end
-}
+// function isLive(t: Tournament, now = Date.now()) {
+//   const start = t.start_date instanceof Date ? t.start_date.getTime() : new Date(t.start_date).getTime()
+//   const end = t.end_date instanceof Date ? t.end_date.getTime() : new Date(t.end_date).getTime()
+//   return start <= now && now <= end
+// }
 
 
 export default function TournamentsPage() {

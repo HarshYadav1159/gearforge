@@ -85,7 +85,7 @@ function Popular() {
 
   // 4) Covers for exactly these games (hook should use a unique cache key per id set)
   const coverIds: number[] = gameQuery.isFetched
-    ? gameQuery.data.map((g) => Number(g.id))
+    ? gameQuery.data!.map((g) => Number(g.id))
     : [];
   const coverQuery = useCoversQuery(gameQuery.isFetched, coverIds);
 

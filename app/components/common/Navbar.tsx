@@ -3,13 +3,14 @@ import { usePathname } from "next/navigation"
 import SearchBar from "./SearchBar"
 import Link from 'next/link'
 import { MdMenu } from "react-icons/md";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { useAppDispatch} from "@/app/hooks";
 import { togglePanel } from "./side_panel/sidePanelSlice";
 
 function NavBar() {
   const pathName: string = usePathname()
-  const isLoggedIn = useAppSelector(state => state.users.isLoggedIn)
-  const username = useAppSelector(state => state.users.user.user_name)
+  //===========================================USE IN PROD LATER==================================================
+  // const isLoggedIn = useAppSelector(state => state.users.isLoggedIn)
+  // const username = useAppSelector(state => state.users.user.user_name)
   const dispatch = useAppDispatch()
 
   const navLink = [

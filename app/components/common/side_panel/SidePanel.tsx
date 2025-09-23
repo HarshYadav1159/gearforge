@@ -2,7 +2,6 @@
 import Link from "next/link";
 import GenreList from "./GenreList"
 import { MdOutlineSportsMartialArts } from "react-icons/md";
-import { MdLiveTv } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { useEffect } from "react";
 import { openPanel} from "./sidePanelSlice";

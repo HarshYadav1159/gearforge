@@ -60,7 +60,7 @@ export function useGenreQuery(genreId: number, page: number = 1, pageSize: numbe
 
             // combine and dedupe by id
             const combined = [...data1, ...data2]
-            const dedupMap = new Map<number, any>()
+            const dedupMap = new Map<number, unknown>()
             for (const item of combined) {
                 if (item && typeof item.id === "number") dedupMap.set(item.id, item)
             }

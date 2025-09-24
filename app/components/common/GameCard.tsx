@@ -16,7 +16,7 @@ function GameCard(props: CardProps) {
             <Link href={`game/${props.game.id}`}>
                 <div className="h-44 w-36 sm:h-52 sm:w-44 md:h-60 md:w-52 rounded-2xl flex flex-col cursor-pointer bg-neutral-800 border border-neutral-700">
                     <div className="flex-1 flex items-center justify-center text-center text-xs text-neutral-400 p-2">
-                        {props.game.name || 'Game'} (No Cover)
+                        {'Game'} (No Cover)
                     </div>
                 </div>
             </Link>

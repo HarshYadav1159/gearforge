@@ -1,3 +1,4 @@
+import { GameModel } from "@/app/models/game_model";
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 
@@ -39,8 +40,8 @@ export function useCoverQuery(gameId: number, coverId?: string| null){
 
 export function useGenreQuery(genreId: number, page: number = 1, pageSize: number = 10){
 
-    return useQuery({
-        queryFn: async () => {
+    return useQuery<GameModel[], Error>({
+        queryFn: async () : Promise<GameModel[]> => {
             const offset = (page - 1) * pageSize
 
             // first request: genres referenced directly
@@ -64,7 +65,7 @@ export function useGenreQuery(genreId: number, page: number = 1, pageSize: numbe
             for (const item of combined) {
                 if (item && typeof item.id === "number") dedupMap.set(item.id, item)
             }
-            const result = Array.from(dedupMap.values())
+            const result = Array.from(dedupMap.values()) as GameModel[]
 
             return result
         },

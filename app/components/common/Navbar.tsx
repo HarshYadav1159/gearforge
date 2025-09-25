@@ -7,7 +7,7 @@ import { MdMenu } from "react-icons/md";
 import { useAppDispatch } from "@/app/hooks";
 import { togglePanel } from "./side_panel/sidePanelSlice";
 import Image from "next/image";
-import logo from "@/public/gearforge.svg"
+import logo from "../../../public/gearforge.svg"
 
 function NavBar() {
   const pathName: string = usePathname();

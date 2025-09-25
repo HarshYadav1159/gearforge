@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import React, { useEffect } from 'react';
 import { togglePanel } from './sidePanelSlice';
 import { usePathname } from 'next/navigation';
-import logo from "@/public/gearforge.svg"
+import logo from "../../../../public/gearforge.svg"
 
 export default function SidePanel() {
   const dispatch = useAppDispatch();

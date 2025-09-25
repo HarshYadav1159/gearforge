@@ -6,6 +6,7 @@ import Link from "next/link";
 import { MdMenu } from "react-icons/md";
 import { useAppDispatch } from "@/app/hooks";
 import { togglePanel } from "./side_panel/sidePanelSlice";
+import Image from "next/image";
 
 function NavBar() {
   const pathName: string = usePathname();
@@ -28,7 +29,18 @@ function NavBar() {
     >
       {/* Left: Logo (desktop) / Menu (mobile) */}
       <div className="flex items-center gap-3">
-        <div className="hidden md:block">Logo</div>
+        <div className="hidden md:block">
+          <Image
+            src="/gearforge.svg"
+            alt="GearForge Logo"
+            className="h-8 w-auto"
+            height={80}
+            width={80}
+            draggable={false}
+            // priority="true"
+          />
+        </div>
+
         <button
           className="inline-flex items-center md:hidden"
           aria-label="Open menu"

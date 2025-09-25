@@ -7,6 +7,7 @@ import { MdMenu } from "react-icons/md";
 import { useAppDispatch } from "@/app/hooks";
 import { togglePanel } from "./side_panel/sidePanelSlice";
 import Image from "next/image";
+import logo from "@/public/gearforge.svg"
 
 function NavBar() {
   const pathName: string = usePathname();
@@ -31,7 +32,7 @@ function NavBar() {
       <div className="flex items-center gap-3">
         <div className="hidden md:block">
           <Image
-            src="/gearforge.svg"
+            src={logo}
             alt="GearForge Logo"
             className="h-8 w-auto"
             height={80}

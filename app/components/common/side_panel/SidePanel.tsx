@@ -95,6 +95,7 @@ export default function SidePanel() {
           </Link>
 
           <GenreList />
+          
         </div>
       </aside>
     </>

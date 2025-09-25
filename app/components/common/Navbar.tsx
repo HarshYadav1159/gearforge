@@ -47,8 +47,8 @@ function NavBar() {
             /* cap width on small screens to keep links in same row */
             max-w-[55vw]   /* phones */
             sm:max-w-[60vw]
-            md:max-w-md
-            lg:max-w-lg
+            md:w-[25vw]
+            lg:w-[25vw]
           `}
           type="text"
           name="game_search_field"

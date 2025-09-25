@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import React, { useEffect } from 'react';
 import { togglePanel } from './sidePanelSlice';
 import { usePathname } from 'next/navigation';
-import logo from "../../../../public/gearforge.svg"
+
 
 export default function SidePanel() {
   const dispatch = useAppDispatch();
@@ -68,7 +68,7 @@ export default function SidePanel() {
             onClick={closeOnMobile}
           >
             <Image
-              src={logo}
+              src="/gearforge.svg"
               alt="GearForge Logo"
               width={28}
               height={28}

@@ -14,10 +14,16 @@ function Carousel() {
   const [current, setCurrent] = useState(1);
   const [dragX, setDragX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+
+  // React-level transition toggle (for normal moves & snap-back)
   const [transitionOn, setTransitionOn] = useState(true);
+
+  // Autoplay
   const [autoPlay, setAutoPlay] = useState(true);
 
+  // Refs
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
   const widthRef = useRef(0);
 
   // drag refs
@@ -29,7 +35,10 @@ function Carousel() {
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const setW = () => { widthRef.current = el.clientWidth; };
+    const setW = () => {
+      widthRef.current = el.clientWidth;
+      // console.log('[width] =', widthRef.current);
+    };
     setW();
     const ro = new ResizeObserver(setW);
     ro.observe(el);
@@ -50,29 +59,17 @@ function Carousel() {
     return () => clearTimeout(t);
   }, [autoPlay]);
 
-  // ----- Navigation helpers -----
+  // ----- Navigation: NEXT only (you said no arrows; swipe uses both directions) -----
   const goNext = () => {
     if (isDragging) return;
     setAutoPlay(false);
     setTransitionOn(true);
     setDragX(0);
-    setCurrent((c) => c + 1);
-  };
-
-  // When CSS slide finishes, fix index if we’re on a clone
-  const handleTransitionEnd = () => {
-    if (current === 0) {
-      // We slid onto the left clone -> jump to last real
-      setTransitionOn(false);
-      setCurrent(realCount);
-      // Re-enable transition next frame (no visual jump)
-      requestAnimationFrame(() => setTransitionOn(true));
-    } else if (current === realCount + 1) {
-      // We slid onto the right clone -> jump to first real
-      setTransitionOn(false);
-      setCurrent(1);
-      requestAnimationFrame(() => setTransitionOn(true));
-    }
+    setCurrent((c) => {
+      const nv = c + 1;
+      // console.log('goNext:', c, '->', nv);
+      return nv;
+    });
   };
 
   // ----- Pointer events (mouse/touch/pen) -----
@@ -80,12 +77,13 @@ function Carousel() {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     setAutoPlay(false);
     setIsDragging(true);
-    setTransitionOn(false);
+    setTransitionOn(false); // while actively dragging, disable transition
     setDragX(0);
     startXRef.current = e.clientX;
     lastXRef.current = e.clientX;
     lastTRef.current = performance.now();
     e.currentTarget.setPointerCapture?.(e.pointerId);
+    // console.log('[down] current=', current);
   };
 
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -108,20 +106,20 @@ function Carousel() {
     const vx = (clientX - lastXRef.current) / dt; // px/ms
     const velocityThreshold = 0.55 / 16;
 
-    setTransitionOn(true);
+    setTransitionOn(true); // enable transition for settle animation
+    setDragX(0);
 
     if (dx <= -distanceThreshold || vx < -velocityThreshold) {
       // swipe left -> next
-      setDragX(0);
       setCurrent((c) => c + 1);
+      // console.log('[finishDrag] LEFT -> next, new current scheduled');
     } else if (dx >= distanceThreshold || vx > velocityThreshold) {
       // swipe right -> prev
-      setDragX(0);
       setCurrent((c) => c - 1);
+      // console.log('[finishDrag] RIGHT -> prev, new current scheduled');
     } else {
-      // snap back
-      setDragX(0);
-      // current stays the same; transitionOn=true animates back to center
+      // snap back (no index change)
+      // console.log('[finishDrag] snap back');
     }
   };
 
@@ -132,19 +130,70 @@ function Carousel() {
 
   const onPointerCancel = (e: React.PointerEvent<HTMLDivElement>) => {
     e.currentTarget.releasePointerCapture?.(e.pointerId);
-    // cancel: snap back
     setIsDragging(false);
     setTransitionOn(true);
     setDragX(0);
   };
 
-  // ----- Derived transform -----
+  // ----- Transition end: fix clone → real with IMPERATIVE snap (no animation) -----
+  const handleTransitionEnd = () => {
+    // Log current state at the moment the slide animation completes
+    console.log(
+      `[handleTransitionEnd] current=${current}, realCount=${realCount}, transitionOn=${transitionOn}`
+    );
+
+    const track = trackRef.current;
+    if (!track) return;
+
+    if (current === 0) {
+      console.log('→ On LEFT clone, snapping to last real slide (imperative)');
+      // 1) Disable CSS transition on the element itself
+      track.style.transition = 'none';
+
+      // 2) Update React state to the last real slide
+      setCurrent(realCount);
+
+      // 3) Snap transform immediately to the last real slide
+      const w = widthRef.current || 0;
+      track.style.transform = `translateX(${-realCount * w}px)`;
+
+      // 4) Force reflow so the browser applies the snap right now
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      track.offsetHeight;
+
+      // 5) Re-enable React-driven transitions and clear inline override
+      requestAnimationFrame(() => {
+        track.style.transition = ''; // allow class-based transitions again
+        setTransitionOn(true);
+        console.log('→ Snap completed (LEFT). Transition re-enabled.');
+      });
+    } else if (current === realCount + 1) {
+      console.log('→ On RIGHT clone, snapping to first real slide (imperative)');
+      track.style.transition = 'none';
+      setCurrent(1);
+      const w = widthRef.current || 0;
+      track.style.transform = `translateX(${-1 * w}px)`;
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      track.offsetHeight;
+      requestAnimationFrame(() => {
+        track.style.transition = '';
+        setTransitionOn(true);
+        console.log('→ Snap completed (RIGHT). Transition re-enabled.');
+      });
+    } else {
+      console.log('→ Normal transition end (no clone correction)');
+    }
+  };
+
+  // ----- Derived transform (React-driven) -----
   // Base position is the current slide offset plus any live drag delta
   const x = -(current * (widthRef.current || 0)) + dragX;
   const trackStyle = {
     transform: `translateX(${x}px)`,
   };
-  const trackClass = transitionOn ? 'transition-transform duration-300 ease-out' : 'transition-none';
+  const trackClass = transitionOn
+    ? 'transition-transform duration-300 ease-out'
+    : 'transition-none';
 
   return (
     /**
@@ -173,6 +222,7 @@ function Carousel() {
       >
         {/* Track */}
         <div
+          ref={trackRef}
           className={`absolute inset-0 flex ${trackClass}`}
           style={trackStyle}
           onTransitionEnd={handleTransitionEnd}
@@ -192,8 +242,6 @@ function Carousel() {
             </div>
           ))}
         </div>
-
-
       </div>
 
       {/* Dots */}
@@ -203,12 +251,16 @@ function Carousel() {
             key={i}
             type="button"
             aria-label={`Go to slide ${i + 1}`}
-            className={`h-2.5 w-2.5 rounded-full ${i === ((current - 1 + realCount) % realCount) ? 'bg-blue-400' : 'bg-white/80'}`}
+            className={`h-2.5 w-2.5 rounded-full ${
+              i === ((current - 1 + realCount) % realCount)
+                ? 'bg-blue-400'
+                : 'bg-white/80'
+            }`}
             onClick={() => {
               if (isDragging) return;
               setAutoPlay(false);
               setTransitionOn(true);
-              // Current is 1..N; target should be i+1
+              // Current is 1..N; dot index i maps to i+1
               setCurrent(i + 1);
               setDragX(0);
             }}

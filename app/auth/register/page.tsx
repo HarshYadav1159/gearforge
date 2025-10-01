@@ -9,15 +9,6 @@ import { MdVisibility } from "react-icons/md";
 import { MdVisibilityOff } from "react-icons/md";
 import { v4 as uuidv4 } from "uuid"
 
-/*
-    Register User:
-
-    <> For Confirm password field, check if the user enters the correct password or not, prompt on every click if the password doesn't match
-    <> When User clicks 'Login' -> Check for error, if error 401 recieved, then prompt user to re-enter different user name
-    <> On submission : Check -> If password is at least 8 characters long, if not then prompt user 
-
-*/
-
 function Register() {
 
     const router = useRouter()
@@ -61,7 +52,6 @@ function Register() {
         } else if (confirmPassword !== "") {
             setSamePassword(false)
         }
-        // console.log("Password : ", password, " Confirm Password: ", confirmPassword)
 
     }, [confirmPassword, password, setConfirmPassword, setPassword])
 
@@ -89,7 +79,6 @@ function Register() {
             }
         },
         onSuccess: () => {
-            //On Sucessfull registration Login user into our platform
             loginUser.mutate()
             console.log("user logged in successfully")
         }
@@ -109,12 +98,12 @@ function Register() {
             return
         }
 
-        registerUser.mutate() //Registers user and sends data to server, now server handles this unless error is returned from the server
+        registerUser.mutate()
     }
 
-    return (<><div className="h-screen flex justify-center items-center">
+    return (<><div className="min-h-screen flex justify-center items-center px-4">
 
-        <form className="bg-[#242528] flex flex-col gap-3 p-4 w-[25vw] h-fit rounded-xl">
+        <form className="bg-[#242528] flex flex-col gap-3 p-4 w-full max-w-sm h-fit rounded-xl">
             <div className="flex justify-center"><p className="text-2xl text-white">Register</p></div>
 
             <div className="w-full">
@@ -140,13 +129,11 @@ function Register() {
             <span>{!isSamePassword ? <p className="text-red-600" >Passwords do not match</p> : ""}</span>
             <button onClick={handleOnRegisterClick} className="border rounded-2xl p-2 transition-all duration-200 ease-in-out hover:bg-blue-500 hover:text-white cursor-pointer">Register</button>
             <p className="self-center">or You can sign in with</p>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
                 <div className="w-full border rounded flex justify-center items-center p-2 cursor-pointer"><Image src={"/google-symbol.png"} height={30} width={30} alt="Google Logo" /><p>Google</p></div>
-                <div className="w-full border rounded flex justify-center items-center p-2 bg-white cursor-pointer"><Image src={"/discord-logo.png"} width={1020} height={1020} alt="Discord Logo" /></div>
             </div>
         </form>
     </div>
-        {/* Modal To Display Error If they Occur (Related to passwords) */}
         <Modal
             open={modalOpen}
             title="Notice"
@@ -168,7 +155,6 @@ function Modal({
     message: string;
     onClose: () => void;
 }) {
-    // Close on Esc
     useEffect(() => {
         if (!open) return;
         const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -185,13 +171,11 @@ function Modal({
             aria-modal="true"
             aria-labelledby="dialog-title"
         >
-            {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-black/60"
                 onClick={onClose}
                 aria-hidden="true"
             />
-            {/* Panel */}
             <div className="relative w-[90vw] max-w-md rounded-xl bg-[#242528] p-5 shadow-xl ring-1 ring-white/10">
                 <h2 id="dialog-title" className="text-lg font-semibold text-white">
                     {title}

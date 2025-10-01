@@ -96,9 +96,9 @@ function AuthenticationPage() {
     }, [isLoggedIn, hasProfile, router])
 
     return (<>
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-center min-h-screen px-4">
 
-            <form className="h-fit w-[25vw] bg-[#242528] rounded-2xl p-4 flex flex-col justify-center">
+            <form className="h-fit w-full max-w-sm bg-[#242528] rounded-2xl p-4 flex flex-col justify-center">
 
                 <h1 className="text-2xl text-white self-center mt-2">Sign in</h1>
                 <div className="p-2 flex flex-col gap-3 mt-2">
@@ -107,7 +107,7 @@ function AuthenticationPage() {
                     <input onChange={handlePasswordInput} className="rounded-xl bg-[#161719] w-full p-2" placeholder="Enter Your Password"></input>
                     <span className={isValidPassword ? "hidden" : ""}><p className="text-red-600" >Incorrect Password</p></span>
                     <Link href={"auth/forgot_pwd"}><p className="ml-1 text-[0.9rem] hover:underline cursor-pointer w-fit">Forgot Password ?</p></Link>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                         <button onClick={handleLogin} className="border p-2 w-full rounded-xl cursor-pointer hover:bg-green-500 hover:text-white transition-all duration-200 ease-in-out">Login</button>
                         <Link className="w-full" href={"/auth/register"}><button className="border p-2 w-full rounded-xl cursor-pointer hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out">Register</button ></Link>
                     </div>

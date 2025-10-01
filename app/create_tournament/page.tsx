@@ -13,9 +13,9 @@ export default function CreateTournamentPage() {
   const [totalSlots, setTotalSlots] = useState<number>(8)
   const [startDate, setStartDate] = useState<string>("")
   const [endDate, setEndDate] = useState<string>("")
-  const [registeredIds, setRegisteredIds] = useState<string>("") // comma separated
-  const [winnerId, setWinnerId] = useState<string>("")
-  const [runnerupId, setRunnerupId] = useState<string>("")
+  // const [registeredIds, setRegisteredIds] = useState<string>("") // comma separated
+  // const [winnerId, setWinnerId] = useState<string>("")
+  // const [runnerupId, setRunnerupId] = useState<string>("")
   const [tournamentDivision, setTournamentDivision] = useState<number>(1)
   const [poolPrice, setPoolPrice] = useState<number>(0)
   const [entryFee, setEntryFee] = useState<number>(0)
@@ -65,12 +65,14 @@ export default function CreateTournamentPage() {
       team_size: Number(teamSize),
       total_slots: Number(totalSlots),
       registered_slots: 0,
-      registerd_id: registeredIds
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean),
-      winner_id: winnerId.trim(),
-      runnerup_id: runnerupId.trim(),
+      //================================= THESE VALUES HAVE TO BE CHANGED ==============================
+      // registerd_id: registeredIds.split(",").map((s) => s.trim()).filter(Boolean),
+      // winner_id: winnerId.trim(),
+      // runnerup_id: runnerupId.trim(),
+      registerd_id:["a","b"],
+      winner_id:"a",
+      runnerup_id:"b",
+      //=================================================================================================
       tournament_division: Number(tournamentDivision),
       pool_price: Number(poolPrice),
       entry_fee: Number(entryFee),
@@ -91,7 +93,7 @@ export default function CreateTournamentPage() {
       // optional: navigate back to tournaments listing
       router.push("/tournaments")
     } catch (err) {
-      setError("Failed to save tournament locally.")
+      setError(`Failed to save tournament locally : ${err}`)
       setSaving(false)
       return
     }

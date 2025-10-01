@@ -27,12 +27,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
           <NavBar />
           <SidePanel />
-          <div className="pt-16  md:ml-60 max-w-screen overflow-hidden">{children}</div>
+          {/* Keep top padding for fixed navbar; allow overflow for full-bleed sections */}
+          <div className="pt-16 md:ml-60">{children}</div>
         </Providers>
       </body>
     </html>

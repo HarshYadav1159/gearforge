@@ -5,45 +5,48 @@ import Media from "./sections/Media"
 import Platforms from "./sections/Paltforms"
 import { GameModel } from "@/app/models/game_model"
 
-interface GameDetailsProps{
-
-    gameModel : GameModel
-    companiesName : string[]
-
+interface GameDetailsProps {
+    gameModel: GameModel
+    companiesName: string[]
 }
 
-function GameDetails({gameModel,companiesName}: GameDetailsProps) {
-
+function GameDetails({ gameModel, companiesName }: GameDetailsProps) {
     const [clickedItem, setClickItem] = useState<string>('About')
 
     const onClickItemHandler = (item: string) => {
         setClickItem(item)
     }
 
-    function renderSection(sectionName: string,gameModel:GameModel) {
-
+    // This function now renders child components without passing down style props
+    function renderSection(sectionName: string, gameModel: GameModel) {
         switch (sectionName) {
             case 'About':
-                return <About gameModel={gameModel} companies_name={companiesName} className="grid grid-cols-2 gap-2 text-white"/>
+                return <About gameModel={gameModel} companies_name={companiesName} />
             case 'Media':
-                return <Media gameModel={gameModel} className="w-[60vw] flex flex-col justify-center items-center"/>
+                return <Media gameModel={gameModel} />
             case 'Platforms':
                 return <Platforms />
             default:
                 return <div>Some Error</div>
         }
-
     }
 
-    return (<><div className="relative text-xl m-4 h-auto w-fit flex select-none">
-        <div onClick={() => onClickItemHandler('About')} className={`absolute py-2 px-4 cursor-pointer  rounded-tl-2xl rounded-tr-2xl ${clickedItem === 'About' ? 'transition-all duration-300 ease-in-out bg-gray-800 z-10 text-white' : 'bg-gray-600 z-0'}`}>About</div>
-        <div onClick={() => onClickItemHandler('Media')} className={`absolute py-2 px-4 cursor-pointer bg-gray-600  rounded-tl-2xl rounded-tr-2xl ml-19 ${clickedItem === 'Media' ? 'transition-all duration-300 ease-in-out bg-gray-800 z-10 text-white' : 'bg-gray-600 z-0'}`}>Media</div>
-        <div onClick={() => onClickItemHandler('Platforms')} className={`absolute py-2 px-4 cursor-pointer bg-gray-600 rounded-tl-2xl rounded-tr-2xl ml-38 ${clickedItem === 'Platforms' ? 'transition-all duration-300 ease-in-out bg-gray-800 z-10 text-white' : 'bg-gray-600 z-0'}`}>Platforms</div>
-    </div>
-        <div className="mt-7 w-fit min-w-150 max-w-[80vw]  h-auto bg-gray-800 p-4 rounded-xl">
-            {renderSection(clickedItem,gameModel )}
+    const tabBaseStyle = "py-2 px-4 cursor-pointer transition-colors duration-200 ease-in-out";
+    const activeTabStyle = "bg-gray-800 text-white border-b-2 border-blue-500";
+    const inactiveTabStyle = "text-gray-400 hover:bg-gray-700 hover:text-white rounded-t-lg";
+
+    return (
+        <div className="mt-4 w-full">
+            <div className="text-sm sm:text-lg flex border-b border-gray-700 select-none">
+                <div onClick={() => onClickItemHandler('About')} className={`${tabBaseStyle} ${clickedItem === 'About' ? activeTabStyle : inactiveTabStyle}`}>About</div>
+                <div onClick={() => onClickItemHandler('Media')} className={`${tabBaseStyle} ${clickedItem === 'Media' ? activeTabStyle : inactiveTabStyle}`}>Media</div>
+                <div onClick={() => onClickItemHandler('Platforms')} className={`${tabBaseStyle} ${clickedItem === 'Platforms' ? activeTabStyle : inactiveTabStyle}`}>Platforms</div>
+            </div>
+            <div className="w-full bg-gray-800 p-4 rounded-b-xl rounded-tr-xl">
+                {renderSection(clickedItem, gameModel)}
+            </div>
         </div>
-    </>)
+    )
 }
 
-export default GameDetails
+export default GameDetails;

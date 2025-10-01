@@ -10,41 +10,50 @@ const requestHeaders = {
   "Authorization": "Bearer " + apiKey
 };
 
-export function useHighestRatedQuery () {
-  
-    const gameQuery = useQuery({
-    queryKey: ["highest_rated"],
+export function useHighestRatedQuery(limit = 20) {
+  return useQuery({
+    queryKey: ["highest_rated", limit],
     queryFn: async () => {
-      const response = await axios.post(
+      const { data } = await axios.post(
         `/igdb/games`,
-        "fields id, cover; sort rating desc;",
-        {
-          headers: requestHeaders,
-        }
+        `fields id, cover; sort rating desc; limit ${limit};`,
+        { headers: requestHeaders }
       );
-      return response.data;
+      return data;
     },
+    staleTime: 60_000,
   });
-  return gameQuery
-};
-
-export function useCoversQuery(gameQueryisFetched:boolean, gameIds:string[]){
-    
-    // console.log("Is Game Query Fetched : ", gameQueryisFetched, "For Games : ", gameIds)
-    const coverQuery = useQuery({
-        queryFn: async () => {
-            const response = await axios.post('/igdb/covers', `fields id,game,height,url,width, image_id; where game = (${gameIds.join(",")});`, {
-                headers: requestHeaders
-            })
-            return response.data
-        },
-
-        enabled: gameQueryisFetched,
-
-        queryKey: ['game_cover']
-    })
-
-    return coverQuery
-
 }
 
+/**
+ * Fetch covers for a set of game IDs.
+ * - Unique cache key per ID set (prevents clobbering)
+ * - Limit >= number of IDs to avoid partial results
+ * - placeholderData keeps the previous covers visible while refetching (v5 way)
+ */
+export function useCoversQuery(
+  gameQueryIsFetched: boolean,
+  gameIds: Array<number | string>
+) {
+  const ids = (gameIds ?? [])
+    .map((v) => Number(v))
+    .filter((n) => Number.isFinite(n));
+
+  const keyIds = [...ids].sort((a, b) => a - b).join(",");
+
+  return useQuery({
+    queryKey: ["game_cover", keyIds],
+    enabled: gameQueryIsFetched && ids.length > 0,
+    queryFn: async () => {
+      const limit = Math.max(ids.length, 20);
+      const { data } = await axios.post(
+        "/igdb/covers",
+        `fields id,game,height,url,width,image_id; where game = (${ids.join(",")}); limit ${limit};`,
+        { headers: requestHeaders }
+      );
+      return data;
+    },
+    placeholderData: (prev) => prev, // v5 replacement for keepPreviousData
+    staleTime: 60_000,
+  });
+}

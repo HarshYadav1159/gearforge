@@ -8,7 +8,6 @@ import Image from "next/image"
 
 interface MediaModel {
     gameModel: GameModel
-    className?: string
 }
 
 interface Video {
@@ -19,10 +18,10 @@ interface Video {
 }
 
 interface Screenshots {
-    id:number,
-    game:number,
-    url:string,
-    image_id:number
+    id: number,
+    game: number,
+    url: string,
+    image_id: string // image_id is a string
 }
 
 const apiKey: string = process.env.NEXT_PUBLIC_API_ACCESS_TOKEN!
@@ -32,12 +31,12 @@ const requestHeaders = {
     'Authorization': 'Bearer ' + apiKey
 }
 
-function Media({ gameModel, className }: MediaModel) {
+function Media({ gameModel }: MediaModel) {
 
     const vidQuery = useQuery({
         queryKey: [`${gameModel.id}_videos`],
         queryFn: async () => {
-            const response = await axios.post('/api/game_videos', `fields id,name,game,video_id; where game = ${gameModel.id};`, {
+            const response = await axios.post('/igdb/game_videos', `fields id,name,game,video_id; where game = ${gameModel.id};`, {
                 headers: requestHeaders
             })
             return response.data
@@ -45,43 +44,62 @@ function Media({ gameModel, className }: MediaModel) {
     })
 
     const ssQuery = useQuery({
-        queryKey:[`${gameModel.id}_ss`],
-        queryFn:async()=>{
-            const response = await axios.post('/api/screenshots', `fields id,game,url, image_id; where game = ${gameModel.id};`,{
-                headers:requestHeaders
+        queryKey: [`${gameModel.id}_ss`],
+        queryFn: async () => {
+            const response = await axios.post('/igdb/screenshots', `fields id,game,url, image_id; where game = ${gameModel.id};`, {
+                headers: requestHeaders
             })
             return response.data
         }
     })
 
-    if (vidQuery.isLoading) {
+    if (vidQuery.isLoading || ssQuery.isLoading) {
         return <LoadingSpinner />
     }
 
-    if(ssQuery.isLoading){
-        return <LoadingSpinner/>
-    }
+    return (
+        <div className="w-full flex flex-col items-center gap-8">
 
-    return (<div className={className}>
-        
-        {/* If there is no video of a game then simply return empty div to not show anything */}
-        { vidQuery.data.map((value: Video, index: number) => {
-            return (<div key={value.id} className="w-full flex flex-col justify-center items-center p-2">
+            {vidQuery.isSuccess && vidQuery.data.length > 0 && (
+                <div className="w-full">
+                    <h3 className="text-2xl text-white mb-4 text-center">Videos</h3>
+                    {vidQuery.data.map((value: Video) => (
+                        <div key={value.id} className="w-full flex flex-col items-center p-2 mb-4">
+                            <div className="text-lg text-white mb-2">{value.name}</div>
+                            {/* Responsive iframe container */}
+                            <div className="relative w-full overflow-hidden" style={{ paddingTop: '56.25%' }}>
+                                <iframe
+                                    className='absolute top-0 left-0 w-full h-full rounded-lg'
+                                    src={`https://www.youtube.com/embed/${value.video_id}`}
+                                    title={value.name}
+                                    allowFullScreen
+                                ></iframe>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
 
-                <div className="text-2xl text-white">{value.name} #{index + 1}</div>
-                {/* Using Embed URL for YouTube */}
-                <iframe className='w-[600px] h-96 p-2 rounded-2xl' src={`https://www.youtube.com/embed/${value.video_id}`} title={value.name} allowFullScreen ></iframe>
-
-            </div>)      
-        })}
-
-    <div className="text-2xl text-white">Screenshots</div>
-        {ssQuery.data.map((value:Screenshots)=>{
-                    
-                    return (<div key={value.id}><Image className={'border-white w-[600px] h-96 p-2 rounded-2xl'}  src={`https://images.igdb.com/igdb/image/upload/t_720p/${value.image_id}.jpg`} height={1080} width={720} alt="Game Screenshot"/> </div>)
-                })}
-
-    </div>)
+            {ssQuery.isSuccess && ssQuery.data.length > 0 && (
+                <div className="w-full">
+                    <h3 className="text-2xl text-white mb-4 text-center">Screenshots</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {ssQuery.data.map((value: Screenshots) => (
+                            <div key={value.id}>
+                                <Image
+                                    className="rounded-lg w-full h-auto"
+                                    src={`https://images.igdb.com/igdb/image/upload/t_720p/${value.image_id}.jpg`}
+                                    height={720}
+                                    width={1280}
+                                    alt="Game Screenshot"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    )
 }
 
 export default Media

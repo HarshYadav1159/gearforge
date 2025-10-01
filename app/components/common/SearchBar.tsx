@@ -34,7 +34,7 @@ function SearchBar(prop: SearchBarFields) {
 
     const searchQuery = useQuery({
         queryFn: async () => {
-            const response = await axios.post('/api/games', `fields id,name; search "${inputField}";`, {
+            const response = await axios.post('/igdb/games', `fields id,name; search "${inputField}";`, {
                 headers: requestHeaders
             })
             return response.data
@@ -51,7 +51,8 @@ function SearchBar(prop: SearchBarFields) {
                 <MdOutlineSearch className="text-xl" />
                 <input onChange={searchInputandler} type={prop.type} name={prop.name} placeholder={prop.placeholder} className="w-full focus:outline-none" />
             </div>
-            <div className={inputField.length == 0 ? `hidden` : `absolute bg-[#242528] rounded-b-xl w-full p-2`}>
+           <div
+   className={ inputField.length == 0 ? `hidden`: `absolute z-50 bg-[#242528] rounded-b-xl w-full p-2 max-h-60 overflow-auto`}>
                 {searchQuery.isLoading ? <div className="flex justify-center items-center h-full w-full"><LoadingSpinner /></div>
                     : searchQuery.isError ? <div>Error Retrieving </div>
                         : searchedItems != null ? <div> {searchedItems.map((value) => {

@@ -4,20 +4,20 @@ import { usePathname } from "next/navigation";
 import SearchBar from "./SearchBar";
 import Link from "next/link";
 import { MdMenu } from "react-icons/md";
-import { useAppDispatch } from "@/app/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { togglePanel } from "./side_panel/sidePanelSlice";
 import Image from "next/image";
 // import logo from "../../../public/gearforge.svg"
 
-
-
 function NavBar() {
   const pathName: string = usePathname();
   const dispatch = useAppDispatch();
-
+  const isLoggedIn = useAppSelector((state)=>state.users.isLoggedIn)
+  const username = useAppSelector((state)=>state.users.user.user_name)
   const navLink = [
     { name: "Home", href: "/" },
     { name: "Tournaments", href: "/tournaments" },
+    { name: !isLoggedIn ? "Sign In" : username, href: !isLoggedIn? "/auth" : "/user_profile"}
   ];
 
   return (
@@ -40,7 +40,7 @@ function NavBar() {
             height={80}
             width={80}
             draggable={false}
-            // priority="true"
+          // priority="true"
           />
         </div>
 
@@ -56,6 +56,7 @@ function NavBar() {
       {/* Center: Search (width capped on mobile so links fit on the right) */}
       <div className="w-full flex justify-center">
         <SearchBar
+        key={pathName}
           className={`
             bg-[#161719] px-2 py-1 gap-2 items-center flex rounded-xl
             w-full

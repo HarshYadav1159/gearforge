@@ -19,6 +19,8 @@ function AuthenticationPage() {
     const [isValidEmail, setIsValidEmail] = useState<boolean>(true)
     const [isValidPassword, setIsValidPassword] = useState<boolean>(true)
     const [hasProfile, setHasProfile] = useState<boolean>(false)
+    const [userId, setUserId] = useState<string>("")
+    const [sysLogin, setSysLogin] = useState<boolean>(false)
     const { data: session, status } = useSession()
     const isLoggedIn = useAppSelector((state) => state.users.isLoggedIn)
     const handleEmailInput = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)
@@ -35,6 +37,7 @@ function AuthenticationPage() {
             setIsValidEmail(true)
             setIsValidPassword(true)
             dispatch(loginUser())
+            setSysLogin(true)
             router.push("/")
             console.log("User Logged in Successfully")
         },
@@ -49,6 +52,7 @@ function AuthenticationPage() {
     }
 
     useEffect(() => {
+
         if (login_user.isError) {
             switch (login_user.error.status) {
                 case 404:
@@ -60,7 +64,7 @@ function AuthenticationPage() {
                     break;
             }
         }
-        // ================================================= THIS REQUIRES HEAVY MODIFICATIONS
+
         if (status === "authenticated" && session.user && !isLoggedIn) {
             (async () => {
                 const response = await axios.post('http://localhost:8080/auth/oauth/upsert', {
@@ -79,21 +83,24 @@ function AuthenticationPage() {
 
                 if (response.data.hasProfile) {
                     setHasProfile(true)
+
+                    // setUserId(response.data.user_id)
                 }
                 dispatch(loginUser())
+                setUserId(response.data.user_id)
             })()
         }
-    }, [login_user.isError, status, session, isLoggedIn, dispatch])
+    }, [login_user.isError, status, session, isLoggedIn, dispatch, login_user.error?.status])
 
+    // wherever you have the effect
     useEffect(() => {
-      
-        if (!isLoggedIn) return
+        if (!isLoggedIn || sysLogin) return;
 
-        router.replace(hasProfile ? "/" : "/profile_setup")
-        router.refresh()
-        //MODIFY THIS ACCORDING TO THE REDIRECT URL PAGE LIKE IF USER FIRST WENT ON TOURNAMENT REGISTRATION PAGE, THEN REDIRECT
-        //THEM BACK TO TOURNAMENT REGISTRATION PAGE IF 
-    }, [isLoggedIn, hasProfile, router])
+        const target = hasProfile ? "/" : `/user_profile/profile_setup?user_id=${encodeURIComponent(userId)}`;
+
+        router.replace(target);
+        // router.refresh() is usually unnecessary right after replace
+    }, [isLoggedIn, hasProfile, sysLogin, userId, router]);
 
     return (<>
         <div className="flex justify-center items-center min-h-screen px-4">

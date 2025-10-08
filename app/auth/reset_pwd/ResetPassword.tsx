@@ -38,8 +38,11 @@ function ResetPassword() {
     queryFn: async () => verifyResetLink(token),
     enabled: Boolean(token),   // don't run until token exists
     retry: false,
-    staleTime: 0,
+    staleTime: Infinity,
     gcTime: 0,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
   })
 
   const update_pwd = useMutation({

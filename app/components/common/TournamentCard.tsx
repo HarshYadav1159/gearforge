@@ -22,9 +22,9 @@ export default function TournamentCard({
   showRegister?: boolean
 }) {
   const progress =
-    t.total_slots > 0 ? Math.round((t.registered_slots / t.total_slots) * 100) : 0
+    t.total_slots! > 0 ? Math.round((t.registered_slots! / t.total_slots!) * 100) : 0
 
-  const isFull = t.registered_slots >= t.total_slots
+  const isFull = t.registered_slots! >= t.total_slots!
 
   return (
     <article

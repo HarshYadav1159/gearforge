@@ -22,6 +22,7 @@ type RawTournament = {
   pool_price?: unknown;
   entry_fee?: unknown;
   game_type?: unknown;
+  status?:unknown
 };
 
 // tiny helpers for safe coercion
@@ -51,13 +52,14 @@ export function parseRaw(raw: unknown): Tournament {
     team_size: toNumber(r.team_size, 1),
     total_slots: toNumber(r.total_slots),
     registered_slots: toNumber(r.registered_slots),
-    registerd_id: Array.isArray(r.registerd_id) ? r.registerd_id.map(String) : [],
+    registered_id: Array.isArray(r.registerd_id) ? r.registerd_id.map(String) : [],
     winner_id: toString(r.winner_id),
     runnerup_id: toString(r.runnerup_id),
     tournament_division: toNumber(r.tournament_division),
     pool_price: toNumber(r.pool_price),
     entry_fee: toNumber(r.entry_fee),
-    game_type: toString(r.game_type),
+    game_category: toString(r.game_type),
+    status:'live'
   };
 }
 

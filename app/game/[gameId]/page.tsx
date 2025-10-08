@@ -58,7 +58,7 @@ function GamePage() {
         queryKey: [`involved_companies_${gameId}`],
         queryFn: async () => {
             if (involvedCompanyIds.length === 0) return []
-            const response = await axios.post('/igdb/involved_companies', `fields id,company,developer; where id = (${involvedCompanyIds.join(",")});`, {
+            const response = await axios.post('/api/igdb/involved_companies', `fields id,company,developer; where id = (${involvedCompanyIds.join(",")});`, {
                 headers: headerObject
             })
             return response.data as InvolvedCompanyData[]
@@ -78,7 +78,7 @@ function GamePage() {
         queryKey: [`companies_for_${gameId}`],
         queryFn: async () => {
             if (developerCompanyIds.length === 0) return []
-            const response = await axios.post('/igdb/companies', `fields name,id; where id = (${developerCompanyIds.join(",")});`, {
+            const response = await axios.post('/api/igdb/companies', `fields name,id; where id = (${developerCompanyIds.join(",")});`, {
                 headers: headerObject
             })
             return response.data as CompanyData[]

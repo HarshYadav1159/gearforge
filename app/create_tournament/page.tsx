@@ -61,7 +61,7 @@ export default function CreateTournamentPage() {
       start_date: new Date(startDate),
       end_date: new Date(endDate),
       cover: cover.trim(),
-      game_type: gameType.trim(), // NEW
+      game_category: gameType.trim(), // NEW
       team_size: Number(teamSize),
       total_slots: Number(totalSlots),
       registered_slots: 0,
@@ -69,13 +69,14 @@ export default function CreateTournamentPage() {
       // registerd_id: registeredIds.split(",").map((s) => s.trim()).filter(Boolean),
       // winner_id: winnerId.trim(),
       // runnerup_id: runnerupId.trim(),
-      registerd_id:["a","b"],
+      registered_id:["a","b"],
       winner_id:"a",
       runnerup_id:"b",
       //=================================================================================================
       tournament_division: Number(tournamentDivision),
       pool_price: Number(poolPrice),
       entry_fee: Number(entryFee),
+      status:'upcoming'
     }
 
     try {

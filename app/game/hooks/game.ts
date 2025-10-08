@@ -13,7 +13,7 @@ export function useGameQuery(gameId: number){
 
     return useQuery({
         queryFn: async () => {
-            const response = await axios.post('/igdb/games', `fields *; where id=${gameId};`, {
+            const response = await axios.post('/api/igdb/games', `fields *; where id=${gameId};`, {
                 headers: requestHeaders
             })
 
@@ -27,7 +27,7 @@ export function useCoverQuery(gameId: number, coverId?: string| null){
         
     return useQuery({
         queryFn:async()=>{
-            const response = await axios.post('/igdb/covers', `fields game,height,image_id,url; where game = ${gameId};`,{
+            const response = await axios.post('/api/igdb/covers', `fields game,height,image_id,url; where game = ${gameId};`,{
                 headers:requestHeaders
             })
             return response.data
@@ -46,13 +46,13 @@ export function useGenreQuery(genreId: number, page: number = 1, pageSize: numbe
 
             // first request: genres referenced directly
             const body1 = `fields *; where genres=${genreId}; limit ${pageSize}; offset ${offset};`
-            const response1 = await axios.post('/igdb/games', body1, {
+            const response1 = await axios.post('/api/igdb/games', body1, {
                 headers: requestHeaders
             })
 
             // second request: genre id enclosed in parentheses
             const body2 = `fields *; where genres=(${genreId}); limit ${pageSize}; offset ${offset};`
-            const response2 = await axios.post('/igdb/games', body2, {
+            const response2 = await axios.post('/api/igdb/games', body2, {
                 headers: requestHeaders
             })
 

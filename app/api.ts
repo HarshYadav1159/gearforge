@@ -109,33 +109,33 @@ export async function requestPasswordReset(email: string) {
   return response.data;
 }
 
-export async function updateUser(username?: string, name?: string) {
+export async function updateUser(userId: string, username?: string | null, name?: string | null) {
+  // Build the payload shape:
+  
+  // {
+  //   "data": { "user_id": "...", "user_name": "...", "name": "..." }
+  // }
+  
+  const data: { user_id: string; user_name?: string; name?: string } = {
+    user_id: userId,
+  };
 
-  //Send data according to non-null fields
+  const hasUsername = typeof username === "string" && username.trim().length > 0;
+  const hasName = typeof name === "string" && name.trim().length > 0;
 
-  if (username === null || username === "") {
-    const response = await axios.patch(
-      `${API_BASE_URL}/update_user`,
-      { name: name },
-      {
-        withCredentials: true,
-      }
-    );
-    return response.data;
-  } else if (name === "" || name === null) {
-    const response = await axios.patch(
-      `${API_BASE_URL}/update_user`,
-      { username: username },
-      {
-        withCredentials: true,
-      }
-    );
-    return response.data;
+  if (hasUsername) data.user_name = username!.trim();
+  if (hasName) data.name = name!.trim();
+
+  // Require at least one updatable field
+  if (!hasUsername && !hasName) {
+    throw new Error("Nothing to update. Provide username and/or name.");
   }
 
-  const response = await axios.patch(`${API_BASE_URL}/update_user`, {username:username, name:name}, {
-    withCredentials:true
-  })
-  return response.data
+  const res = await axios.patch(
+    `${API_BASE_URL}/update_user`,
+    { data }, // <-- matches your required payload format
+    { withCredentials: true }
+  );
 
+  return res.data;
 }

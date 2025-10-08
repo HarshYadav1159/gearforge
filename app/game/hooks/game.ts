@@ -13,7 +13,7 @@ export function useGameQuery(gameId: number){
 
     return useQuery({
         queryFn: async () => {
-            const response = await axios.post('/igdb/games', `fields *; where id=${gameId};`, {
+            const response = await axios.post('/api/igdb/games', `fields *; where id=${gameId};`, {
                 headers: requestHeaders
             })
 

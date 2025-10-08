@@ -19,7 +19,8 @@ interface Popularity {
 }
 
 const apiKey: string = process.env.NEXT_PUBLIC_API_ACCESS_TOKEN!;
-const clientId = '8t38bg3wjw6cfu643bmvww73yp3d0h';
+// const clientId = '8t38bg3wjw6cfu643bmvww73yp3d0h';
+const clientId : string = process.env.NEXT_PUBLIC_IGDB_CLIENT_ID!;
 
 function Popular() {
   // 1) Get popularity primitives (grab extra rows so we can dedupe to 10)
@@ -27,7 +28,7 @@ function Popular() {
     queryKey: ['popular_games'],
     queryFn: async () => {
       const { data } = await axios.post<Popularity[]>(
-        '/igdb/popularity_primitives',
+        '/api/igdb/popularity_primitives',
         'fields id,game_id,value; sort value desc; limit 50;',
         {
           headers: {
@@ -63,7 +64,7 @@ function Popular() {
     enabled: popularQuery.isFetched && orderedUniqueIds.length > 0,
     queryFn: async () => {
       const { data } = await axios.post<GameCardModel[]>(
-        '/igdb/games',
+        '/api/igdb/games',
         `fields *; where id=(${orderedUniqueIds.join(",")}); limit ${orderedUniqueIds.length};`,
         {
           headers: {

@@ -2,12 +2,14 @@
 
 import { updateUser } from "@/app/api"
 import { useMutation } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { ChangeEvent, useState } from "react"
 import { AxiosError } from "axios"
 
 function ProfileSetup() {
 
+    const params = useSearchParams()
+    const user_id = params.get("user_id")
     const [username, setUsername] = useState<string>('')
     const [name, setName] = useState<string>('')
     //TO BE USED FOR LATER CHECK FOR EXISTING USER 
@@ -18,8 +20,9 @@ function ProfileSetup() {
 
     const update_user = useMutation({
         mutationKey:[`update_user_${username}`],
-        mutationFn:()=>updateUser(username,name),
+        mutationFn:() => updateUser(user_id!,username,name),
         onSuccess:()=>{
+            document.cookie = `has_profile=1; path=/; samesite=lax`;
             router.replace("/")
         },
         onError(error: AxiosError) {

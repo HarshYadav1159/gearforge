@@ -24,7 +24,7 @@ export interface LoginResponseData {
   data: User;
 }
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "https://gearforge-backend-891464567393.europe-west1.run.app";
 
 export async function login(data: LoginData): Promise<LoginResponseData> {
   const response = await axios.post(`${API_BASE_URL}/login`, data, {

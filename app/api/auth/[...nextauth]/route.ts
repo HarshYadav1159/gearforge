@@ -12,8 +12,8 @@ interface GoogleProfile extends Profile {
 const handler = NextAuth({
   providers: [
     Google({
-      clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET!,
-      clientId: process.env.GOOGLE_OAUTH_CLIENT_ID!,
+      clientSecret: process.env.NEXT_GOOGLE_OAUTH_CLIENT_SECRET!,
+      clientId: process.env.NEXT_GOOGLE_OAUTH_CLIENT_ID!,
     }),
   ],
   session: { strategy: "jwt" },

@@ -67,7 +67,7 @@ function AuthenticationPage() {
 
         if (status === "authenticated" && session.user && !isLoggedIn) {
             (async () => {
-                const response = await axios.post('http://localhost:8080/auth/oauth/upsert', {
+                const response = await axios.post('https://gearforge-backend-891464567393.europe-west1.run.app/auth/oauth/upsert', {
                     input: {
                         provider: session.user?.provider,
                         providerAccountId: session.user?.providerAccountId,

@@ -15,7 +15,7 @@ if (!process.env.NEXT_GOOGLE_OAUTH_CLIENT_ID) {
 if (!process.env.NEXT_GOOGLE_OAUTH_CLIENT_SECRET) {
   throw new Error("Missing GOOGLE_OAUTH_CLIENT_SECRET");
 }
-if (!process.env.NEXTAUTH_SECRET) {
+if (process.env.AUTH_SECRET) {
   throw new Error("Missing NEXTAUTH_SECRET");
 }
 

@@ -109,9 +109,19 @@ function AuthenticationPage() {
 
                 <h1 className="text-2xl text-white self-center mt-2">Sign in</h1>
                 <div className="p-2 flex flex-col gap-3 mt-2">
-                    <input onChange={handleEmailInput} className="rounded-xl bg-[#161719] w-full p-2" placeholder="Enter Your Email"></input>
+                    <input
+                        type="email"
+                        onChange={handleEmailInput}
+                        className="rounded-xl bg-[#161719] w-full p-2"
+                        placeholder="Enter Your Email"
+                    />
                     <span className={isValidEmail ? "hidden" : ""}><p className="text-red-600" >Email does not exist</p></span>
-                    <input onChange={handlePasswordInput} className="rounded-xl bg-[#161719] w-full p-2" placeholder="Enter Your Password"></input>
+                    <input
+                        type="password"
+                        onChange={handlePasswordInput}
+                        className="rounded-xl bg-[#161719] w-full p-2"
+                        placeholder="Enter Your Password"
+                    />
                     <span className={isValidPassword ? "hidden" : ""}><p className="text-red-600" >Incorrect Password</p></span>
                     <Link href={"auth/forgot_pwd"}><p className="ml-1 text-[0.9rem] hover:underline cursor-pointer w-fit">Forgot Password ?</p></Link>
                     <div className="flex flex-col sm:flex-row gap-2">
@@ -148,7 +158,21 @@ function AuthenticationPage() {
                         <div className="h-px bg-gray-300 flex-1" />
                     </div>
                     <div className="flex flex-col gap-2">
-                        <button type="button" onClick={() => signIn("google")} className="flex w-full items-center bg-blue-600 cursor-pointer hover:border"><Image className="bg-white" src={"/google-symbol.png"} width={40} height={40} alt="Google Logo" /><p className="w-full self-center text-white">Sign in With Google</p></button>
+                        <button
+                            type="button"
+                            onClick={() => signIn("google")}
+                            className="
+    flex w-full items-center bg-blue-600 cursor-pointer rounded-xl
+    transition-transform duration-150 ease-out
+    hover:border
+    active:scale-95 active:brightness-95
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/70
+    select-none
+  "
+                        >
+                            <Image className="bg-white" src={"/google-symbol.png"} width={40} height={40} alt="Google Logo" />
+                            <p className="w-full self-center text-white">Sign in With Google</p>
+                        </button>
                         {/* <button className="flex w-full items-center bg-[#5968F0] cursor-pointer hover:border"><Image className="bg-white" src={"/discord-symbol.png"} width={40} height={50} alt="Discord logo" /><p className="w-full self-center text-white">Sign in With Discord</p></button > */}
                     </div>
                 </div>

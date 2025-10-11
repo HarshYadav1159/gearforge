@@ -115,8 +115,32 @@ function AuthenticationPage() {
                     <span className={isValidPassword ? "hidden" : ""}><p className="text-red-600" >Incorrect Password</p></span>
                     <Link href={"auth/forgot_pwd"}><p className="ml-1 text-[0.9rem] hover:underline cursor-pointer w-fit">Forgot Password ?</p></Link>
                     <div className="flex flex-col sm:flex-row gap-2">
-                        <button onClick={handleLogin} className="border p-2 w-full rounded-xl cursor-pointer hover:bg-green-500 hover:text-white transition-all duration-200 ease-in-out">Login</button>
-                        <Link className="w-full" href={"/auth/register"}><button className="border p-2 w-full rounded-xl cursor-pointer hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out">Register</button ></Link>
+                        <button
+                            type="button"
+                            onClick={handleLogin}
+                            className="
+    w-full rounded-xl border p-2 cursor-pointer
+    transition-transform duration-150 ease-out
+    hover:bg-green-500 hover:text-white
+    active:scale-95 active:bg-green-600 active:text-white
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500/60
+    select-none
+  "
+                        >
+                            Login
+                        </button>
+
+                        <Link className="w-full" href={"/auth/register"}>
+                            <button
+                                type="button"
+                                className="w-full rounded-xl border p-2 cursor-pointer transition-transform duration-150 ease-out
+                                        hover:bg-blue-500 hover:text-white
+                                         active:scale-95 active:bg-blue-600 active:text-white
+                                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60
+                                         select-none">
+                                Register
+                            </button>
+                        </Link>
                     </div>
                     <div className="flex items-center gap-3 my-4">
                         <div className="h-px bg-gray-300 flex-1" />

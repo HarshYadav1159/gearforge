@@ -67,7 +67,7 @@ function AuthenticationPage() {
 
         if (status === "authenticated" && session.user && !isLoggedIn) {
             (async () => {
-                const response = await axios.post('http://localhost:8080/auth/oauth/upsert', {
+                const response = await axios.post('https://gearforge-backend-891464567393.europe-west1.run.app/auth/oauth/upsert', {
                     input: {
                         provider: session.user?.provider,
                         providerAccountId: session.user?.providerAccountId,
@@ -109,14 +109,48 @@ function AuthenticationPage() {
 
                 <h1 className="text-2xl text-white self-center mt-2">Sign in</h1>
                 <div className="p-2 flex flex-col gap-3 mt-2">
-                    <input onChange={handleEmailInput} className="rounded-xl bg-[#161719] w-full p-2" placeholder="Enter Your Email"></input>
+                    <input
+                        type="email"
+                        onChange={handleEmailInput}
+                        className="rounded-xl bg-[#161719] w-full p-2"
+                        placeholder="Enter Your Email"
+                    />
                     <span className={isValidEmail ? "hidden" : ""}><p className="text-red-600" >Email does not exist</p></span>
-                    <input onChange={handlePasswordInput} className="rounded-xl bg-[#161719] w-full p-2" placeholder="Enter Your Password"></input>
+                    <input
+                        type="password"
+                        onChange={handlePasswordInput}
+                        className="rounded-xl bg-[#161719] w-full p-2"
+                        placeholder="Enter Your Password"
+                    />
                     <span className={isValidPassword ? "hidden" : ""}><p className="text-red-600" >Incorrect Password</p></span>
                     <Link href={"auth/forgot_pwd"}><p className="ml-1 text-[0.9rem] hover:underline cursor-pointer w-fit">Forgot Password ?</p></Link>
                     <div className="flex flex-col sm:flex-row gap-2">
-                        <button onClick={handleLogin} className="border p-2 w-full rounded-xl cursor-pointer hover:bg-green-500 hover:text-white transition-all duration-200 ease-in-out">Login</button>
-                        <Link className="w-full" href={"/auth/register"}><button className="border p-2 w-full rounded-xl cursor-pointer hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out">Register</button ></Link>
+                        <button
+                            type="button"
+                            onClick={handleLogin}
+                            className="
+    w-full rounded-xl border p-2 cursor-pointer
+    transition-transform duration-150 ease-out
+    hover:bg-green-500 hover:text-white
+    active:scale-95 active:bg-green-600 active:text-white
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500/60
+    select-none
+  "
+                        >
+                            Login
+                        </button>
+
+                        <Link className="w-full" href={"/auth/register"}>
+                            <button
+                                type="button"
+                                className="w-full rounded-xl border p-2 cursor-pointer transition-transform duration-150 ease-out
+                                        hover:bg-blue-500 hover:text-white
+                                         active:scale-95 active:bg-blue-600 active:text-white
+                                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60
+                                         select-none">
+                                Register
+                            </button>
+                        </Link>
                     </div>
                     <div className="flex items-center gap-3 my-4">
                         <div className="h-px bg-gray-300 flex-1" />
@@ -124,7 +158,21 @@ function AuthenticationPage() {
                         <div className="h-px bg-gray-300 flex-1" />
                     </div>
                     <div className="flex flex-col gap-2">
-                        <button type="button" onClick={() => signIn("google")} className="flex w-full items-center bg-blue-600 cursor-pointer hover:border"><Image className="bg-white" src={"/google-symbol.png"} width={40} height={40} alt="Google Logo" /><p className="w-full self-center text-white">Sign in With Google</p></button>
+                        <button
+                            type="button"
+                            onClick={() => signIn("google")}
+                            className="
+    flex w-full items-center bg-blue-600 cursor-pointer rounded-xl
+    transition-transform duration-150 ease-out
+    hover:border
+    active:scale-95 active:brightness-95
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/70
+    select-none
+  "
+                        >
+                            <Image className="bg-white" src={"/google-symbol.png"} width={40} height={40} alt="Google Logo" />
+                            <p className="w-full self-center text-white">Sign in With Google</p>
+                        </button>
                         {/* <button className="flex w-full items-center bg-[#5968F0] cursor-pointer hover:border"><Image className="bg-white" src={"/discord-symbol.png"} width={40} height={50} alt="Discord logo" /><p className="w-full self-center text-white">Sign in With Discord</p></button > */}
                     </div>
                 </div>
